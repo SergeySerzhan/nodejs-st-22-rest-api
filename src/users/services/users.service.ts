@@ -1,17 +1,25 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 } from 'uuid';
 
-import { User } from '../interfaces/user.interface';
 import { CreateUserDto } from '../dto/create-user-dto';
 import { UpdateUserDto } from '../dto/update-user-dto';
 
 import { getSortFuncObjByStringKey } from '../utils/sort';
+import { UserEntity } from '../classes/user-entity';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
+  private users: UserEntity[] = [];
 
-  async getUser(id: string): Promise<User> {
+  private isLoginUnique(login: string): boolean {
+    return !this.users.find((user) => user.login === login);
+  }
+
+  async getUser(id: string): Promise<UserEntity> {
     const user = this.users
       .filter((user) => !user.isDeleted)
       .find((user) => user.id === id);
@@ -19,13 +27,18 @@ export class UsersService {
     return user;
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
+    if (!this.isLoginUnique(createUserDto.login))
+      throw new BadRequestException('User with this login already exist');
     const newUser = { ...createUserDto, id: v4(), isDeleted: false };
     this.users.push(newUser);
     return newUser;
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
     const user = await this.getUser(id);
     const userIndex = this.users.findIndex((user) => user.id === id);
     const newUser = { ...user, ...updateUserDto };
@@ -36,7 +49,7 @@ export class UsersService {
   async getAutoSuggestUsers(
     loginSubstring: string,
     limit: number,
-  ): Promise<User[]> {
+  ): Promise<UserEntity[]> {
     return this.users
       .filter(
         (user) =>
