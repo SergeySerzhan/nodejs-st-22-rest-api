@@ -16,7 +16,7 @@ import {
 import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
-import { UserEntity } from './classes/user-entity';
+import { UserEntity } from './entities/user-entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('v1/users')

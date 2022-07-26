@@ -9,7 +9,7 @@ import { CreateUserDto } from '../dto/create-user-dto';
 import { UpdateUserDto } from '../dto/update-user-dto';
 
 import { getSortFuncObjByStringKey } from '../utils/sort';
-import { UserEntity } from '../classes/user-entity';
+import { UserEntity } from '../entities/user-entity';
 
 @Injectable()
 export class UsersService {
