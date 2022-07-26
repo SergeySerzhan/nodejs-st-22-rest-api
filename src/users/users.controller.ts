@@ -1,10 +1,12 @@
 import {
+  BadRequestException,
   Body,
   ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -14,9 +16,9 @@ import {
 } from '@nestjs/common';
 
 import { UsersService } from './services/users.service';
-import { CreateUserDto } from './dto/create-user-dto';
-import { UpdateUserDto } from './dto/update-user-dto';
-import { UserEntity } from './entities/user-entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserEntity } from './entities/user.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('v1/users')
@@ -27,22 +29,33 @@ export class UsersController {
   async getUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<UserEntity> {
-    return new UserEntity(await this.usersService.getUser(id));
+    const user = await this.usersService.getUser(id);
+
+    if (!user) throw new NotFoundException('User with this id not found');
+
+    return new UserEntity(user);
   }
 
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
-    return new UserEntity(await this.usersService.createUser(createUserDto));
+    try {
+      return new UserEntity(await this.usersService.createUser(createUserDto));
+    } catch (e) {
+      if (e.name === 'SequelizeUniqueConstraintError')
+        throw new BadRequestException('User with this login already exist');
+    }
   }
 
   @Put(':id')
   async updateUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<UserEntity> {
-    return new UserEntity(
-      await this.usersService.updateUser(id, updateUserDto),
-    );
+  ): Promise<any> {
+      const user = await this.usersService.updateUser(id, updateUserDto);
+
+      if (!user) throw new NotFoundException('User with this id not found');
+
+      return new UserEntity(user);
   }
 
   @Get()
