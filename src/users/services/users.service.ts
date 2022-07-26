@@ -4,21 +4,18 @@ import { v4 } from 'uuid';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
-import { getSortFuncObjByStringKey } from '../utils/sort';
-import { UserEntity } from '../entities/user.entity';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '../models/user.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
-  private users: UserEntity[] = [];
-
   constructor(@InjectModel(User) private userModel: typeof User) {}
 
   async getUser(id: string): Promise<User> {
     return await this.userModel.findOne({
       where: {
-        id: id,
+        id,
         isDeleted: false,
       },
     });
@@ -30,16 +27,13 @@ export class UsersService {
     ).toJSON();
   }
 
-  async updateUser(
-    id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<User> {
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const [, updatedUsers] = await this.userModel.update(updateUserDto, {
       where: {
-        id: id,
-        isDeleted: false
+        id,
+        isDeleted: false,
       },
-      returning: true
+      returning: true,
     });
 
     return updatedUsers[0];
@@ -48,18 +42,27 @@ export class UsersService {
   async getAutoSuggestUsers(
     loginSubstring: string,
     limit: number,
-  ): Promise<UserEntity[]> {
-    return this.users
-      .filter(
-        (user) =>
-          !user.isDeleted &&
-          user.login.toLowerCase().includes(loginSubstring.toLowerCase()),
-      )
-      .sort(getSortFuncObjByStringKey('login'))
-      .slice(0, limit);
+  ): Promise<User[]> {
+    return this.userModel.findAll({
+      order: [['login', 'ASC']],
+      where: {
+        login: {
+          [Op.iLike]: `%${loginSubstring}%`,
+        },
+        isDeleted: false,
+      },
+      limit
+    });
   }
 
-  async deleteUser(id: string): Promise<void> {
-    (await this.getUser(id)).isDeleted = true;
+  async deleteUser(id: string): Promise<number> {
+    const [numberOfUpdatedUsers] = await this.userModel.update({isDeleted: true}, {
+      where: {
+        id,
+        isDeleted: false
+      }
+    });
+
+    return numberOfUpdatedUsers;
   }
 }

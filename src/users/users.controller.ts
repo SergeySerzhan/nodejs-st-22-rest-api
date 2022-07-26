@@ -51,11 +51,11 @@ export class UsersController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<any> {
-      const user = await this.usersService.updateUser(id, updateUserDto);
+    const user = await this.usersService.updateUser(id, updateUserDto);
 
-      if (!user) throw new NotFoundException('User with this id not found');
+    if (!user) throw new NotFoundException('User with this id not found');
 
-      return new UserEntity(user);
+    return new UserEntity(user);
   }
 
   @Get()
@@ -73,6 +73,7 @@ export class UsersController {
   async deleteUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
-    return this.usersService.deleteUser(id);
+    if (!(await this.usersService.deleteUser(id)))
+      throw new NotFoundException('User with this id not found');
   }
 }
