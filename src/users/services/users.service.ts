@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { v4 } from 'uuid';
+import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-
-import { InjectModel } from '@nestjs/sequelize';
 import { User } from '../models/user.model';
-import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -22,9 +20,7 @@ export class UsersService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    return (
-      await this.userModel.create({ ...createUserDto, id: v4() })
-    ).toJSON();
+    return (await this.userModel.create({ ...createUserDto })).toJSON();
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -51,17 +47,20 @@ export class UsersService {
         },
         isDeleted: false,
       },
-      limit
+      limit,
     });
   }
 
   async deleteUser(id: string): Promise<number> {
-    const [numberOfUpdatedUsers] = await this.userModel.update({isDeleted: true}, {
-      where: {
-        id,
-        isDeleted: false
-      }
-    });
+    const [numberOfUpdatedUsers] = await this.userModel.update(
+      { isDeleted: true },
+      {
+        where: {
+          id,
+          isDeleted: false,
+        },
+      },
+    );
 
     return numberOfUpdatedUsers;
   }

@@ -1,4 +1,4 @@
-import { IsNotEmpty, Matches, Max, Min } from "class-validator";
+import { IsNotEmpty, Matches, Max, Min } from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
