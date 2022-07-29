@@ -7,7 +7,20 @@ You need to clone or fork this repository and run:
 npm install
 ```
 to install all dependencies.
-Rename .env.example file to .env
+
+Install DB [PostgreSQL](https://www.postgresql.org/) on your machine or use a free web hosting services for PostgreSQL (https://www.heroku.com/postgresor https://www.elephantsql.com/plans.html).
+
+Rename .env.example file to .env. You need to change .env file and provide your PostgreSQL database credentials.
+
+To create and migrate new Users table in your database you can run:
+```bash
+npm run sl:migrate
+```
+
+To seed existing Users table with data you can run:
+```bash
+npm run sl:seed
+```
 
 ## Running the app
 ```bash
