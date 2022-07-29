@@ -1,12 +1,10 @@
 import {
-  BadRequestException,
   Body,
   ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   HttpCode,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -19,7 +17,8 @@ import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
-import { UsersErrorMsgs } from './utils/users-error-msgs';
+import { checkUser } from './utils/check-user';
+import { handleError } from './utils/handle-error';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('v1/users')
@@ -30,11 +29,15 @@ export class UsersController {
   async getUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<UserEntity> {
-    const user = await this.usersService.getUser(id);
+    try {
+      const user = await this.usersService.getUser(id);
 
-    if (!user) throw new NotFoundException(UsersErrorMsgs.NotFound);
+      checkUser(user);
 
-    return new UserEntity(user);
+      return new UserEntity(user);
+    } catch (e) {
+      handleError(e);
+    }
   }
 
   @Post()
@@ -42,8 +45,7 @@ export class UsersController {
     try {
       return new UserEntity(await this.usersService.createUser(createUserDto));
     } catch (e) {
-      if (e.name === 'SequelizeUniqueConstraintError')
-        throw new BadRequestException(UsersErrorMsgs.UniqueLogin);
+      handleError(e);
     }
   }
 
@@ -52,11 +54,15 @@ export class UsersController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<any> {
-    const user = await this.usersService.updateUser(id, updateUserDto);
+    try {
+      const user = await this.usersService.updateUser(id, updateUserDto);
 
-    if (!user) throw new NotFoundException(UsersErrorMsgs.NotFound);
+      checkUser(user);
 
-    return new UserEntity(user);
+      return new UserEntity(user);
+    } catch (e) {
+      handleError(e);
+    }
   }
 
   @Get()
@@ -64,9 +70,13 @@ export class UsersController {
     @Query('search') loginSubstring: string,
     @Query('limit') limit: number,
   ): Promise<UserEntity[]> {
-    return (
-      await this.usersService.getAutoSuggestUsers(loginSubstring, limit)
-    ).map((user) => new UserEntity(user));
+    try {
+      return (
+          await this.usersService.getAutoSuggestUsers(loginSubstring, limit)
+      ).map((user) => new UserEntity(user));
+    } catch (e) {
+      handleError(e);
+    }
   }
 
   @Delete(':id')
@@ -74,7 +84,12 @@ export class UsersController {
   async deleteUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
-    if (!(await this.usersService.deleteUser(id)))
-      throw new NotFoundException(UsersErrorMsgs.NotFound);
+    try {
+      const deletedUser = await this.usersService.deleteUser(id);
+
+      checkUser(deletedUser);
+    } catch (e) {
+      handleError(e);
+    }
   }
 }

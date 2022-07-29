@@ -51,17 +51,18 @@ export class UsersService {
     });
   }
 
-  async deleteUser(id: string): Promise<number> {
-    const [numberOfUpdatedUsers] = await this.userModel.update(
+  async deleteUser(id: string): Promise<User> {
+    const [, updatedUsers] = await this.userModel.update(
       { isDeleted: true },
       {
         where: {
           id,
           isDeleted: false,
         },
+        returning: true,
       },
     );
 
-    return numberOfUpdatedUsers;
+    return updatedUsers[0];
   }
 }
