@@ -4,7 +4,7 @@ module.exports = {
     await queryInterface.createTable('Groups', {
       id: {
         primaryKey: true,
-        type: Sequelize.UUIDV4,
+        type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
       name: {
