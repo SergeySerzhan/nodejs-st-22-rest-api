@@ -3,6 +3,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import 'dotenv/config';
 
 import { UsersModule } from './users/users.module';
+import { GroupsModule } from './groups/groups.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UsersModule } from './users/users.module';
         raw: true,
       },
     }),
+    GroupsModule,
   ],
 })
 export class AppModule {}

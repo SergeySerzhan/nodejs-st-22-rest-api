@@ -8,9 +8,11 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4
       },
       name: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       permissions: {
+        allowNull: false,
         type: Sequelize.ARRAY(Sequelize.ENUM({values: ['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES']}))
       },
     });
