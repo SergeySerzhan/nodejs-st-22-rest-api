@@ -11,7 +11,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       permissions: {
-        type: Sequelize.ARRAY(Sequelize.ENUM('READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES'))
+        type: Sequelize.ARRAY(Sequelize.ENUM({values: ['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES']}))
       },
     });
   },
