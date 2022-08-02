@@ -17,8 +17,8 @@ import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
-import { checkUser } from './utils/check-user';
-import { handleError } from './utils/handle-error';
+import { checkData } from '../utils/check-data';
+import { handleError } from '../utils/handle-error';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('v1/users')
@@ -32,7 +32,7 @@ export class UsersController {
     try {
       const user = await this.usersService.getUser(id);
 
-      checkUser(user);
+      checkData(user, {entityName: 'user'});
 
       return new UserEntity(user);
     } catch (e) {
@@ -57,7 +57,7 @@ export class UsersController {
     try {
       const user = await this.usersService.updateUser(id, updateUserDto);
 
-      checkUser(user);
+      checkData(user, {entityName: 'user'});
 
       return new UserEntity(user);
     } catch (e) {
@@ -87,7 +87,7 @@ export class UsersController {
     try {
       const deletedUser = await this.usersService.deleteUser(id);
 
-      checkUser(deletedUser);
+      checkData(deletedUser, {entityName: 'user'});
     } catch (e) {
       handleError(e);
     }
