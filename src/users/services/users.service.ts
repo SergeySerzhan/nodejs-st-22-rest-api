@@ -1,37 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
 
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../models/user.model';
+import { UsersRepository } from '../data-access/users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User) private userModel: typeof User) {}
+  constructor(private usersRepository: UsersRepository) {}
 
   async getUser(id: string): Promise<User> {
-    return await this.userModel.findOne({
-      where: {
-        id,
-        isDeleted: false,
-      },
-    });
+    return this.usersRepository.findOne(id);
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    return (await this.userModel.create({ ...createUserDto })).toJSON();
+    return this.usersRepository.create(createUserDto);
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const [, updatedUsers] = await this.userModel.update(updateUserDto, {
-      where: {
-        id,
-        isDeleted: false,
-      },
-      returning: true,
-    });
-
+    const [, updatedUsers] = await this.usersRepository.update(
+      id,
+      updateUserDto,
+    );
     return updatedUsers[0];
   }
 
@@ -39,30 +29,14 @@ export class UsersService {
     loginSubstring: string,
     limit: number,
   ): Promise<User[]> {
-    return this.userModel.findAll({
-      order: [['login', 'ASC']],
-      where: {
-        login: {
-          [Op.iLike]: `%${loginSubstring}%`,
-        },
-        isDeleted: false,
-      },
+    return this.usersRepository.findAllByLoginSubstring({
+      order: ['login', 'ASC'],
+      loginSubstring,
       limit,
     });
   }
 
-  async deleteUser(id: string): Promise<User> {
-    const [, updatedUsers] = await this.userModel.update(
-      { isDeleted: true },
-      {
-        where: {
-          id,
-          isDeleted: false,
-        },
-        returning: true,
-      },
-    );
-
-    return updatedUsers[0];
+  async deleteUser(id: string): Promise<number> {
+    return this.usersRepository.delete(id);
   }
 }

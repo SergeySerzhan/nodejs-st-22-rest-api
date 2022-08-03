@@ -17,7 +17,7 @@ import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
-import { checkUser } from './utils/check-user';
+import { checkData } from './utils/check-data';
 import { handleError } from './utils/handle-error';
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -32,7 +32,7 @@ export class UsersController {
     try {
       const user = await this.usersService.getUser(id);
 
-      checkUser(user);
+      checkData(user);
 
       return new UserEntity(user);
     } catch (e) {
@@ -57,7 +57,7 @@ export class UsersController {
     try {
       const user = await this.usersService.updateUser(id, updateUserDto);
 
-      checkUser(user);
+      checkData(user);
 
       return new UserEntity(user);
     } catch (e) {
@@ -72,7 +72,7 @@ export class UsersController {
   ): Promise<UserEntity[]> {
     try {
       return (
-          await this.usersService.getAutoSuggestUsers(loginSubstring, limit)
+        await this.usersService.getAutoSuggestUsers(loginSubstring, limit)
       ).map((user) => new UserEntity(user));
     } catch (e) {
       handleError(e);
@@ -85,9 +85,9 @@ export class UsersController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
     try {
-      const deletedUser = await this.usersService.deleteUser(id);
+      const numOfDeletedUser = await this.usersService.deleteUser(id);
 
-      checkUser(deletedUser);
+      checkData(numOfDeletedUser);
     } catch (e) {
       handleError(e);
     }
