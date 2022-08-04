@@ -1,7 +1,7 @@
 import {
   Body,
   ClassSerializerInterceptor,
-  Controller,
+  Controller, DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
@@ -68,7 +68,7 @@ export class UsersController {
   @Get()
   async getAutoSuggestUsers(
     @Query('search') loginSubstring: string,
-    @Query('limit') limit: number,
+    @Query('limit', new DefaultValuePipe(10)) limit: number,
   ): Promise<UserEntity[]> {
     try {
       return (
