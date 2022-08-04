@@ -45,13 +45,21 @@ export class UsersRepository {
   }
 
   async findAllByLoginSubstring(options: FindAllOptions): Promise<User[]> {
+    let findWhereOptions = {};
+
     const { order, loginSubstring, limit } = options;
-    return this.userModel.findAll({
-      order: [order],
-      where: {
+
+    if (loginSubstring)
+      findWhereOptions = {
         login: {
           [Op.iLike]: `%${loginSubstring}%`,
         },
+      };
+
+    return this.userModel.findAll({
+      order: [order],
+      where: {
+        ...findWhereOptions,
         isDeleted: false,
       },
       limit,
