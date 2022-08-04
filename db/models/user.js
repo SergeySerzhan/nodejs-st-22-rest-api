@@ -2,7 +2,11 @@
 
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {}
+  class User extends Model {
+      static associate(models) {
+          User.belongsToMany(models.Group, {through: 'UserGroup', foreignKey: 'userId'})
+      }
+  }
   User.init(
     {
       id: DataTypes.UUID,
@@ -16,5 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'User',
     },
   );
+
   return User;
 };

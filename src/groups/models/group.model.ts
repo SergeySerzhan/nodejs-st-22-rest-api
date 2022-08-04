@@ -1,7 +1,15 @@
-import { AllowNull, Column, Model, Table } from 'sequelize-typescript';
+import {
+  AllowNull,
+  BelongsToMany,
+  Column,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
 import { GroupPermissions } from '../utils/group-permissions';
+import { User } from '../../users/models/user.model';
+import { UserGroup } from '../../shared/models/usergroup.model';
 
 @Table({ timestamps: false })
 export class Group extends Model {
@@ -21,4 +29,7 @@ export class Group extends Model {
     ),
   )
   permissions: GroupPermissions[];
+
+  @BelongsToMany(() => User, () => UserGroup)
+  users: User[];
 }

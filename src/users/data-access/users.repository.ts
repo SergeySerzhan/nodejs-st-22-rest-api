@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 
 import { User } from '../models/user.model';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { Op } from 'sequelize';
 
 type Order = [columnName: string, direction: 'ASC' | 'DESC'];
 
@@ -26,6 +26,7 @@ export class UsersRepository {
       },
     });
   }
+
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     return (await this.userModel.create({ ...createUserDto })).toJSON();
