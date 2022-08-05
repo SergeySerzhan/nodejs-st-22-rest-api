@@ -4,17 +4,26 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Group } from '../models/group.model';
 import { CreateGroupDto } from '../dto/create-group.dto';
 import { UpdateGroupDto } from '../dto/update-group.dto';
+import { User } from '../../users/models/user.model';
 
 @Injectable()
 export class GroupsRepository {
   constructor(@InjectModel(Group) private groupModel: typeof Group) {}
 
   async findByPk(id: string): Promise<Group> {
-    return this.groupModel.findByPk(id);
+    return (
+      await this.groupModel.findByPk(id, {
+        include: [{ model: User, through: { attributes: [] } }],
+      })
+    ).toJSON();
   }
 
   async findAll(): Promise<Group[]> {
-    return this.groupModel.findAll();
+    return (
+      await this.groupModel.findAll({
+        include: [{ model: User, through: { attributes: [] } }],
+      })
+    ).map((group) => group.toJSON());
   }
 
   async create(createGroupDto: CreateGroupDto): Promise<Group> {

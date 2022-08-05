@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,6 +9,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { GroupsService } from './services/groups.service';
@@ -15,7 +17,9 @@ import { Group } from './models/group.model';
 import { checkData } from '../utils/check-data';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { UserEntity } from '../users/entities/user.entity';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('v1/groups')
 export class GroupsController {
   constructor(private groupsService: GroupsService) {}
@@ -28,12 +32,18 @@ export class GroupsController {
 
     checkData(group, { entityName: 'group' });
 
+    group.users = group.users.map((user) => new UserEntity(user));
     return group;
   }
 
   @Get()
   async getAllGroups(): Promise<Group[]> {
-    return await this.groupsService.getAllGroups();
+    const groups = await this.groupsService.getAllGroups();
+    groups.map((group) => {
+      group.users = group.users.map((user) => new UserEntity(user));
+      return group;
+    });
+    return groups;
   }
 
   @Post()

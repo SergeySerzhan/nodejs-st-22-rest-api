@@ -2,31 +2,36 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('UserGroup', {
-      userId: {
-        type: Sequelize.UUID,
-        primaryKey: true,
-        references: {
-          model: 'Users',
-          key: 'id',
-          as: 'userId'
+    return queryInterface.createTable(
+      'user_groups',
+      {
+        user_id: {
+          type: Sequelize.UUID,
+          primaryKey: true,
+          references: {
+            model: 'users',
+            key: 'id',
+            as: 'userId',
+          },
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE',
         },
-        onDelete: 'CASCADE'
-      },
-      groupId: {
-        type: Sequelize.UUID,
-        primaryKey: true,
-        references: {
-          model: 'Groups',
-          key: 'id',
-          as: 'groupId'
+        group_id: {
+          type: Sequelize.UUID,
+          primaryKey: true,
+          references: {
+            model: 'groups',
+            key: 'id',
+            as: 'groupId',
+          },
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE',
         },
-        onDelete: 'CASCADE'
       },
-    });
+    );
   },
 
-  async down(queryInterface, Sequelize) {
-    return queryInterface.dropTable('UserGroups');
+  async down(queryInterface) {
+    return queryInterface.dropTable('user_groups');
   },
 };

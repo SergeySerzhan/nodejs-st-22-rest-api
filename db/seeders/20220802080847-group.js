@@ -3,12 +3,12 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert(
-        'Groups',
+        'groups',
         [
           {
             id: '7431a0b8-359e-4c00-873f-98ea20dea47e',
             name: 'admin',
-            permissions: Sequelize.literal(`ARRAY['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES']::"enum_Groups_permissions"[]`)
+            permissions: Sequelize.literal(`ARRAY['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES']::"enum_groups_permissions"[]`)
           },
         ],
         {},
@@ -16,6 +16,6 @@ module.exports = {
   },
 
   async down (queryInterface) {
-    return queryInterface.bulkDelete('Groups', null, {});
+    return queryInterface.bulkDelete('groups', null, {});
   }
 };

@@ -5,6 +5,7 @@ import { Op } from 'sequelize';
 import { User } from '../models/user.model';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { Group } from '../../groups/models/group.model';
 
 type Order = [columnName: string, direction: 'ASC' | 'DESC'];
 
@@ -19,14 +20,16 @@ export class UsersRepository {
   constructor(@InjectModel(User) private userModel: typeof User) {}
 
   async findOne(id: string): Promise<User> {
-    return this.userModel.findOne({
-      where: {
-        id,
-        isDeleted: false,
-      },
-    });
+    return (
+      await this.userModel.findOne({
+        where: {
+          id,
+          isDeleted: false,
+        },
+        include: [{ model: Group, through: { attributes: [] } }],
+      })
+    ).toJSON();
   }
-
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     return (await this.userModel.create({ ...createUserDto })).toJSON();
@@ -57,14 +60,17 @@ export class UsersRepository {
         },
       };
 
-    return this.userModel.findAll({
-      order: [order],
-      where: {
-        ...findWhereOptions,
-        isDeleted: false,
-      },
-      limit,
-    });
+    return (
+      await this.userModel.findAll({
+        order: [order],
+        where: {
+          ...findWhereOptions,
+          isDeleted: false,
+        },
+        include: [{ model: Group, through: { attributes: [] } }],
+        limit,
+      })
+    ).map((user) => user.toJSON());
   }
 
   async delete(id: string): Promise<number> {

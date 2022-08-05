@@ -19,9 +19,6 @@ import { UserGroup } from './shared/models/usergroup.model';
       models: [UserGroup],
       autoLoadModels: true,
       synchronize: true,
-      query: {
-        raw: true,
-      },
     }),
     GroupsModule,
   ],

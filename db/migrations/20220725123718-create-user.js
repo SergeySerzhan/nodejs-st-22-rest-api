@@ -2,11 +2,12 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('users', {
       id: {
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
+        unique: true
       },
       login: {
         allowNull: false,
@@ -21,13 +22,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
-      isDeleted: {
+      is_deleted: {
         defaultValue: false,
         type: Sequelize.BOOLEAN,
       },
     });
   },
   async down(queryInterface) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('users');
   },
 };
