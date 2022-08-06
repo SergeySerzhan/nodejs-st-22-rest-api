@@ -36,10 +36,7 @@ export class UsersRepository {
     return user ? user.toJSON() : user;
   }
 
-  async update(
-    id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<User> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const [, updatedUsers] = await this.userModel.update(updateUserDto, {
       where: {
         id,

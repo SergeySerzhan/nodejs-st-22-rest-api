@@ -18,6 +18,7 @@ import { checkData } from '../utils/check-data';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { UserEntity } from '../users/entities/user.entity';
+import { AddUsersToGroupDto } from './dto/add-users-to-group.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('v1/groups')
@@ -67,5 +68,20 @@ export class GroupsController {
     checkData(await this.groupsService.deleteGroup(id), {
       entityName: 'group',
     });
+  }
+
+  @Post(':id')
+  async addUsersToGroup(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body() addUsersToGroupDto: AddUsersToGroupDto,
+  ): Promise<Group> {
+    const { userIds } = addUsersToGroupDto;
+
+    const group = await this.groupsService.addUsersToGroup(id, userIds);
+
+    checkData(group, { entityName: 'group' });
+
+    group.users = group.users.map((user) => new UserEntity(user));
+    return group;
   }
 }

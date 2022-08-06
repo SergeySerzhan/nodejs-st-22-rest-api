@@ -116,6 +116,34 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "add users to group",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userIds\": [\"109156be-c4fb-41ea-b1b4-efe1671c5836\", \"1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/v1/groups/023e948d-5c4b-4035-b022-4c04df86917f",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1",
+						"groups",
+						"023e948d-5c4b-4035-b022-4c04df86917f"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
