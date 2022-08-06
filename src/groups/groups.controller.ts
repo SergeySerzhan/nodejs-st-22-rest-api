@@ -4,13 +4,13 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
+  HttpCode, HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
   Put,
-  UseInterceptors,
-} from '@nestjs/common';
+  UseInterceptors
+} from "@nestjs/common";
 
 import { GroupsService } from './services/groups.service';
 import { Group } from './models/group.model';
@@ -61,7 +61,7 @@ export class GroupsController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async deleteGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
@@ -71,6 +71,7 @@ export class GroupsController {
   }
 
   @Post(':id')
+  @HttpCode(HttpStatus.OK)
   async addUsersToGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() addUsersToGroupDto: AddUsersToGroupDto,

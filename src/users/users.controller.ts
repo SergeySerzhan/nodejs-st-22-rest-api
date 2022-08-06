@@ -5,14 +5,14 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
-  HttpCode,
+  HttpCode, HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
   Put,
   Query,
-  UseInterceptors,
-} from '@nestjs/common';
+  UseInterceptors
+} from "@nestjs/common";
 
 import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -64,7 +64,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
