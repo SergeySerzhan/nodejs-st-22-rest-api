@@ -20,32 +20,35 @@ export class UsersRepository {
   constructor(@InjectModel(User) private userModel: typeof User) {}
 
   async findOne(id: string): Promise<User> {
-    return (
-      await this.userModel.findOne({
-        where: {
-          id,
-          isDeleted: false,
-        },
-        include: [{ model: Group, through: { attributes: [] } }],
-      })
-    ).toJSON();
+    const user = await this.userModel.findOne({
+      where: {
+        id,
+        isDeleted: false,
+      },
+      include: [{ model: Group, through: { attributes: [] } }],
+    });
+
+    return user ? user.toJSON() : user;
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return (await this.userModel.create({ ...createUserDto })).toJSON();
+    const user = await this.userModel.create({ ...createUserDto });
+    return user ? user.toJSON() : user;
   }
 
   async update(
     id: string,
     updateUserDto: UpdateUserDto,
-  ): Promise<[affectedCount: number, affectedRows: User[]]> {
-    return this.userModel.update(updateUserDto, {
+  ): Promise<User> {
+    const [, updatedUsers] = await this.userModel.update(updateUserDto, {
       where: {
         id,
         isDeleted: false,
       },
       returning: true,
     });
+
+    return updatedUsers[0] ? updatedUsers[0].toJSON() : updatedUsers[0];
   }
 
   async findAllByLoginSubstring(options: FindAllOptions): Promise<User[]> {
