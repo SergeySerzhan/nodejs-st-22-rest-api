@@ -38,6 +38,9 @@ Application starts on PORT 3000 (you can change this in .env file), default URL 
 ## Usage
 You can use [Postman](https://www.postman.com/) to send requests to server:
 
+<details>
+<summary>Users endpoints</summary>
+
 ### GET /v1/users/:id
 
 Get user by id. Where :id is user ID in uuid v4 format. Response example:
@@ -109,4 +112,77 @@ Response example:
 ### DELETE /v1/users/:id
 
 Delete user by id. Where :id is user ID in uuid v4 format. Response with 204 status code No-Content.
+</details>
 
+<details>
+<summary>Groups endpoints</summary>
+
+### GET /v1/groups/:id
+
+Get group by id. Where :id is group ID in uuid v4 format. Response example:
+```json
+{
+    "name": "admin",
+    "permissions": ["READ", "WRITE", "DELETE", "UPLOAD_FILES"],
+    "id": "f7d16881-106b-420b-9b5e-d95649603884"
+}
+```
+
+### GET /v1/groups
+
+Get all groups. Response example:
+```json
+[
+  {
+    "name": "admin",
+    "permissions": ["READ", "WRITE", "DELETE", "UPLOAD_FILES"],
+    "id": "f7d16881-106b-420b-9b5e-d95649603884"
+  },
+  {
+    "name": "user",
+    "permissions": ["READ", "WRITE"],
+    "id": "dd9d4f33-39ba-44e9-a3c4-4c988e0bf76e"
+  }
+]
+```
+
+### POST /v1/groups
+
+Create group. Request should contain body in JSON format:
+```json
+{
+    "name": "admin",
+    "permissions": ["READ", "WRITE", "DELETE", "UPLOAD_FILES"]
+}
+```
+Response example:
+```json
+{
+    "name": "admin",
+    "permissions": ["READ", "WRITE", "DELETE", "UPLOAD_FILES"],
+    "id": "f7d16881-106b-420b-9b5e-d95649603884"
+}
+```
+
+### PUT /v1/groups/:id
+
+Update existing user by id. Where :id is group ID in uuid v4 format. Request should contain body in JSON format, where all fields are optional. Request body example:
+```json
+{
+    "name": "admin",
+    "permissions": ["READ", "WRITE", "DELETE", "UPLOAD_FILES"]
+}
+```
+Response example:
+```json
+{
+    "name": "admin",
+    "permissions": ["READ", "WRITE", "DELETE", "UPLOAD_FILES"],
+    "id": "f7d16881-106b-420b-9b5e-d95649603884"
+}
+```
+
+### DELETE /v1/groups/:id
+
+Delete group by id. Where :id is group ID in uuid v4 format. Response with 204 status code No-Content.
+</details>

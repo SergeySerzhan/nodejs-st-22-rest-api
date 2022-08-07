@@ -1,0 +1,121 @@
+{
+	"info": {
+		"_postman_id": "c4b6f4e9-18ea-442d-9eea-cce4489b138b",
+		"name": "groups",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15495793"
+	},
+	"item": [
+		{
+			"name": "get all groups",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/v1/groups",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1",
+						"groups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get group by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/v1/groups/7431a0b8-359e-4c00-873f-98ea20dea47e",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1",
+						"groups",
+						"7431a0b8-359e-4c00-873f-98ea20dea47e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create group",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"user\",\r\n    \"permissions\": [\"READ\", \"WRITE\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/v1/groups",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1",
+						"groups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update group",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"permissions\": [\"READ\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/v1/groups/ba7685e3-2b0a-440a-8e1b-4a24a9bad116",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1",
+						"groups",
+						"ba7685e3-2b0a-440a-8e1b-4a24a9bad116"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete group",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/v1/groups/ba7685e3-2b0a-440a-8e1b-4a24a9bad116",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1",
+						"groups",
+						"ba7685e3-2b0a-440a-8e1b-4a24a9bad116"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
