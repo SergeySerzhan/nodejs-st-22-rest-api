@@ -3,7 +3,7 @@
 module.exports = {
   async up(queryInterface) {
     return queryInterface.bulkInsert(
-      'Users',
+      'users',
       [
         {
           id: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
@@ -29,6 +29,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    return queryInterface.bulkDelete('Users', null, {});
+    return queryInterface.bulkDelete('users', null, {});
   },
 };

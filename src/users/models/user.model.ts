@@ -1,7 +1,17 @@
-import { AllowNull, Column, Model, Table, Unique } from 'sequelize-typescript';
+import {
+  AllowNull,
+  BelongsToMany,
+  Column,
+  Model,
+  Table,
+  Unique,
+} from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
-@Table({ timestamps: false })
+import { Group } from '../../groups/models/group.model';
+import { UserGroup } from '../../shared/models/usergroup.model';
+
+@Table({ timestamps: false, underscored: true })
 export class User extends Model {
   @Column({ primaryKey: true, defaultValue: DataTypes.UUIDV4 })
   id: string;
@@ -21,4 +31,7 @@ export class User extends Model {
 
   @Column({ defaultValue: false })
   isDeleted: boolean;
+
+  @BelongsToMany(() => Group, () => UserGroup)
+  groups: Group[];
 }

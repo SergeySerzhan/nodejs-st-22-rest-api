@@ -4,6 +4,7 @@ import 'dotenv/config';
 
 import { UsersModule } from './users/users.module';
 import { GroupsModule } from './groups/groups.module';
+import { UserGroup } from './shared/models/usergroup.model';
 
 @Module({
   imports: [
@@ -15,11 +16,9 @@ import { GroupsModule } from './groups/groups.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
+      models: [UserGroup],
       autoLoadModels: true,
       synchronize: true,
-      query: {
-        raw: true,
-      },
     }),
     GroupsModule,
   ],

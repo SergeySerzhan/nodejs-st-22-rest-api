@@ -1,5 +1,7 @@
 import { Exclude } from 'class-transformer';
 
+import { Group } from '../../groups/models/group.model';
+
 export class UserEntity {
   id: string;
 
@@ -12,6 +14,8 @@ export class UserEntity {
 
   @Exclude()
   isDeleted: boolean;
+
+  groups?: Group[];
 
   constructor(partial: Partial<UserEntity>) {
     Object.assign(this, partial);

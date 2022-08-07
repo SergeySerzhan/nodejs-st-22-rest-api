@@ -18,11 +18,7 @@ export class UsersService {
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const [, updatedUsers] = await this.usersRepository.update(
-      id,
-      updateUserDto,
-    );
-    return updatedUsers[0];
+    return this.usersRepository.update(id, updateUserDto);
   }
 
   async getAutoSuggestUsers(
