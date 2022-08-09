@@ -68,13 +68,6 @@ export class GroupsRepository {
   async addUsersToGroup(groupId: string, userIds: string[]): Promise<Group> {
     await this.sequelize.transaction(async (t) => {
       const group = await this.groupModel.findByPk(groupId, {
-        include: [
-          {
-            model: User,
-            through: { attributes: [] },
-            where: { isDeleted: false },
-          },
-        ],
         transaction: t,
       });
 
@@ -99,6 +92,7 @@ export class GroupsRepository {
         include: [
           {
             model: User,
+            required: false,
             through: { attributes: [] },
             where: { isDeleted: false },
           },
