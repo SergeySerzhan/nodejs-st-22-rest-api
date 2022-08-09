@@ -20,10 +20,11 @@ export class GroupsRepository {
       include: [
         {
           model: User,
-          through: { attributes: [] },
+          required: false,
           where: {
             isDeleted: false,
           },
+          through: { attributes: [] },
         },
       ],
     });
@@ -36,8 +37,9 @@ export class GroupsRepository {
         include: [
           {
             model: User,
-            through: { attributes: [] },
+            required: false,
             where: { isDeleted: false },
+            through: { attributes: [] },
           },
         ],
       })
