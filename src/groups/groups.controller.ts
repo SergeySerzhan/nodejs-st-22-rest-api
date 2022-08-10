@@ -4,13 +4,14 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode, HttpStatus,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
   Put,
-  UseInterceptors
-} from "@nestjs/common";
+  UseInterceptors,
+} from '@nestjs/common';
 
 import { GroupsService } from './services/groups.service';
 import { Group } from './models/group.model';
@@ -21,7 +22,7 @@ import { UserEntity } from '../users/entities/user.entity';
 import { AddUsersToGroupDto } from './dto/add-users-to-group.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
-@Controller('v1/groups')
+@Controller({ path: 'groups', version: '1' })
 export class GroupsController {
   constructor(private groupsService: GroupsService) {}
 

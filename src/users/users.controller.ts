@@ -5,14 +5,15 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
-  HttpCode, HttpStatus,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
   Put,
   Query,
-  UseInterceptors
-} from "@nestjs/common";
+  UseInterceptors,
+} from '@nestjs/common';
 
 import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,7 +22,7 @@ import { UserEntity } from './entities/user.entity';
 import { checkData } from '../utils/check-data';
 
 @UseInterceptors(ClassSerializerInterceptor)
-@Controller('v1/users')
+@Controller({ path: 'users', version: '1' })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
