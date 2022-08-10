@@ -12,7 +12,7 @@ export class CreateUserDto {
   @IsString()
   login: string;
 
-  @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{2,}$/, {
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(.+){2,}$/, {
     message: 'Password must contain letters and numbers',
   })
   @IsString()
