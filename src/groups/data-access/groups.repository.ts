@@ -87,17 +87,6 @@ export class GroupsRepository {
       await group.$add('users', users, { transaction: t });
     });
 
-    return (
-      await this.groupModel.findByPk(groupId, {
-        include: [
-          {
-            model: User,
-            required: false,
-            through: { attributes: [] },
-            where: { isDeleted: false },
-          },
-        ],
-      })
-    ).toJSON();
+    return this.findByPk(groupId);
   }
 }
