@@ -25,7 +25,7 @@ export class UsersRepository {
         id,
         isDeleted: false,
       },
-      include: [{ model: Group, through: { attributes: [] } }],
+      include: [{ model: Group, through: { attributes: [] }, required: false }],
     });
 
     return user ? user.toJSON() : user;
@@ -67,7 +67,9 @@ export class UsersRepository {
           ...findWhereOptions,
           isDeleted: false,
         },
-        include: [{ model: Group, through: { attributes: [] } }],
+        include: [
+          { model: Group, through: { attributes: [] }, required: false },
+        ],
         limit,
       })
     ).map((user) => user.toJSON());
