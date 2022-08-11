@@ -1,6 +1,7 @@
 import {
   IsInt,
-  IsNotEmpty, IsOptional,
+  IsNotEmpty,
+  IsOptional,
   IsString,
   Matches,
   Max,

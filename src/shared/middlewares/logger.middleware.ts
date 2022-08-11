@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { logger } from '../loggers/service.logger';
+import { logger } from '../loggers/default.logger';
 
 export function globalLogger(req: Request, res: Response, next: NextFunction) {
   logger.log({
