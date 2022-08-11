@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Sequelize } from 'sequelize-typescript';
 
 import { Group } from '../models/group.model';
 import { CreateGroupDto } from '../dto/create-group.dto';
 import { UpdateGroupDto } from '../dto/update-group.dto';
 import { User } from '../../users/models/user.model';
-import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class GroupsRepository {
@@ -66,38 +66,13 @@ export class GroupsRepository {
   }
 
   async addUsersToGroup(groupId: string, userIds: string[]): Promise<Group> {
+    const group = await this.groupModel.findByPk(groupId);
+    if (!group) return group;
+
     await this.sequelize.transaction(async (t) => {
-      const group = await this.groupModel.findByPk(groupId, {
-        transaction: t,
-      });
-
-      if (!group) return group;
-
-      const users = await Promise.all(
-        userIds.map(
-          async (userId) =>
-            await this.userModel.findOne({
-              where: { id: userId, isDeleted: false },
-              rejectOnEmpty: true,
-              transaction: t,
-            }),
-        ),
-      );
-
-      await group.$add('users', users, { transaction: t });
+      await group.$add('users', userIds, { transaction: t });
     });
 
-    return (
-      await this.groupModel.findByPk(groupId, {
-        include: [
-          {
-            model: User,
-            required: false,
-            through: { attributes: [] },
-            where: { isDeleted: false },
-          },
-        ],
-      })
-    ).toJSON();
+    return this.findByPk(groupId);
   }
 }
