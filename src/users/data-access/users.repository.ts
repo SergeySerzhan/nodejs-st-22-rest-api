@@ -25,7 +25,7 @@ export class UsersRepository {
         id,
         isDeleted: false,
       },
-      include: [{ model: Group, through: { attributes: [] } }],
+      include: [{ model: Group, through: { attributes: [] }, required: false }],
     });
 
     return user ? user.toJSON() : user;
@@ -36,10 +36,7 @@ export class UsersRepository {
     return user ? user.toJSON() : user;
   }
 
-  async update(
-    id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<User> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const [, updatedUsers] = await this.userModel.update(updateUserDto, {
       where: {
         id,
@@ -70,7 +67,9 @@ export class UsersRepository {
           ...findWhereOptions,
           isDeleted: false,
         },
-        include: [{ model: Group, through: { attributes: [] } }],
+        include: [
+          { model: Group, through: { attributes: [] }, required: false },
+        ],
         limit,
       })
     ).map((user) => user.toJSON());

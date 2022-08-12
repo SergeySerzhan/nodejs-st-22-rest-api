@@ -31,4 +31,8 @@ export class GroupsService {
   async deleteGroup(id: string): Promise<number> {
     return this.groupsRepository.delete(id);
   }
+
+  async addUsersToGroup(groupId: string, userIds: string[]): Promise<Group> {
+    return this.groupsRepository.addUsersToGroup(groupId, userIds);
+  }
 }

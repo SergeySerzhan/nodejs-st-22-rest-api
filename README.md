@@ -254,4 +254,34 @@ Response example:
 
 Delete group by id. Where :id is group ID in uuid v4 format. Response with 204 status code No-Content.
 
+### POST /v1/groups/:id
+
+Add users to group. Where :id is group ID in uuid v4 format. Request should contain body in JSON format. Request body example:
+
+```json
+{
+  "userIds": [
+    "109156be-c4fb-41ea-b1b4-efe1671c5836",
+    "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
+  ]
+}
+```
+
+Response example:
+
+```json
+{
+  "name": "admin",
+  "permissions": ["READ", "WRITE", "DELETE", "UPLOAD_FILES"],
+  "id": "f7d16881-106b-420b-9b5e-d95649603884",
+  "users": [
+    {
+      "login": "sergeyserzhan",
+      "age": 25,
+      "id": "f7d16881-106b-420b-9b5e-d95649603884"
+    }
+  ]
+}
+```
+
 </details>
