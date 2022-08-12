@@ -1,6 +1,6 @@
 import {
   IsInt,
-  IsNotEmpty,
+  IsNotEmpty, IsOptional,
   IsString,
   Matches,
   Max,
@@ -10,16 +10,19 @@ import {
 export class UpdateUserDto {
   @IsNotEmpty()
   @IsString()
+  @IsOptional()
   login: string;
 
-  @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{2,}$/, {
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(.+){2,}$/, {
     message: 'Password must contain letters and numbers',
   })
   @IsString()
+  @IsOptional()
   password: string;
 
   @Min(4)
   @Max(130)
   @IsInt()
+  @IsOptional()
   age: number;
 }
