@@ -30,7 +30,7 @@ export class UsersController {
   async getUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<UserEntity> {
-    const user = await this.usersService.getUser(id);
+    const user = await this.usersService.getUser({ id });
 
     checkData(user, { entityName: 'user' });
 

@@ -5,6 +5,7 @@ import 'dotenv/config';
 import { UsersModule } from './users/users.module';
 import { GroupsModule } from './groups/groups.module';
 import { UserGroup } from './shared/models/usergroup.model';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserGroup } from './shared/models/usergroup.model';
       synchronize: true,
     }),
     GroupsModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
