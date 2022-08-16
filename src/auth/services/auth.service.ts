@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { compare } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
 
 import { LoginDto } from '../dto/login.dto';
 import { UsersRepository } from '../../users/data-access/users.repository';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private jwtService: JwtService,
+  ) {}
 
   async login(loginDto: LoginDto): Promise<string> {
     const { login, password } = loginDto;
@@ -16,13 +19,6 @@ export class AuthService {
 
     if (!user || !(await compare(password, user.password))) return;
 
-    const permissions = user.groups.reduce(
-      (prev, cur) => Array.from(new Set(prev.concat(cur.permissions))),
-      [],
-    );
-
-    return sign({ permissions }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    });
+    return this.jwtService.signAsync({ sub: user.id });
   }
 }

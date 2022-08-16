@@ -19,7 +19,6 @@ export class ErrorLoggingInterceptor implements NestInterceptor {
           class: ctx.getClass().name,
           method: ctx.getHandler().name,
           arguments: args,
-          error: err,
         });
 
         throw err;

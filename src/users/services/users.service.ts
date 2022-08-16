@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { genSalt, hash } from 'bcrypt';
+import { hash } from 'bcrypt';
 import { WhereOptions } from 'sequelize';
 
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -46,7 +46,6 @@ export class UsersService {
   }
 
   private static async hashPassword(password): Promise<string> {
-    const salt = await genSalt(+process.env.SALT_ROUNDS);
-    return hash(password, salt);
+    return hash(password, +process.env.SALT_ROUNDS);
   }
 }

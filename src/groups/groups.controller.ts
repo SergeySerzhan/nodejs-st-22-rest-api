@@ -14,12 +14,12 @@ import {
 } from '@nestjs/common';
 
 import { GroupsService } from './services/groups.service';
-import { Group } from './models/group.model';
 import { checkData } from '../utils/check-data';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { UserEntity } from '../users/entities/user.entity';
 import { AddUsersToGroupDto } from './dto/add-users-to-group.dto';
+import { plainToClass } from 'class-transformer';
+import { GroupEntity } from './entities/group.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller({ path: 'groups', version: '1' })
@@ -29,36 +29,38 @@ export class GroupsController {
   @Get(':id')
   async getGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<Group> {
+  ): Promise<GroupEntity> {
     const group = await this.groupsService.getGroup(id);
 
     checkData(group, { entityName: 'group' });
 
-    group.users = group.users.map((user) => new UserEntity(user));
-    return group;
+    return plainToClass(GroupEntity, group);
   }
 
   @Get()
-  async getAllGroups(): Promise<Group[]> {
+  async getAllGroups(): Promise<GroupEntity[]> {
     const groups = await this.groupsService.getAllGroups();
-    groups.map((group) => {
-      group.users = group.users.map((user) => new UserEntity(user));
-      return group;
-    });
-    return groups;
+
+    return groups.map((group) => plainToClass(GroupEntity, group));
   }
 
   @Post()
-  async createGroup(@Body() createGroupDto: CreateGroupDto): Promise<Group> {
-    return await this.groupsService.createGroup(createGroupDto);
+  async createGroup(
+    @Body() createGroupDto: CreateGroupDto,
+  ): Promise<GroupEntity> {
+    const group = await this.groupsService.createGroup(createGroupDto);
+
+    return plainToClass(GroupEntity, group);
   }
 
   @Put(':id')
   async updateGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateGroupDto: UpdateGroupDto,
-  ): Promise<Group> {
-    return await this.groupsService.updateGroup(id, updateGroupDto);
+  ): Promise<GroupEntity> {
+    const group = await this.groupsService.updateGroup(id, updateGroupDto);
+
+    return plainToClass(GroupEntity, group);
   }
 
   @Delete(':id')
@@ -76,14 +78,13 @@ export class GroupsController {
   async addUsersToGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() addUsersToGroupDto: AddUsersToGroupDto,
-  ): Promise<Group> {
+  ): Promise<GroupEntity> {
     const { userIds } = addUsersToGroupDto;
 
     const group = await this.groupsService.addUsersToGroup(id, userIds);
 
     checkData(group, { entityName: 'group' });
 
-    group.users = group.users.map((user) => new UserEntity(user));
-    return group;
+    return plainToClass(GroupEntity, group);
   }
 }
