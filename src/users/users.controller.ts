@@ -12,6 +12,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
@@ -20,6 +21,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { checkData } from '../utils/check-data';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller({ path: 'users', version: '1' })
@@ -27,6 +29,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   async getUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<UserEntity> {
@@ -43,6 +46,7 @@ export class UsersController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   async updateUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -55,6 +59,7 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   async getAutoSuggestUsers(
     @Query('search') loginSubstring: string,
     @Query('limit', new DefaultValuePipe(10)) limit: number,
@@ -65,6 +70,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

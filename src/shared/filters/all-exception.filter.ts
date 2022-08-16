@@ -2,7 +2,9 @@ import {
   ArgumentsHost,
   BadRequestException,
   Catch,
+  ForbiddenException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 
@@ -12,9 +14,10 @@ import { ErrorMsgs } from '../../utils/error-msgs';
 export class AllExceptionFilter extends BaseExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     if ((exception as any)?.name === 'SequelizeUniqueConstraintError')
-      return super.catch(new BadRequestException(ErrorMsgs.UniqueLogin), host);
-
-    if ((exception as any)?.name === 'SequelizeForeignKeyConstraintError') {
+      super.catch(new BadRequestException(ErrorMsgs.UniqueLogin), host);
+    else if (
+      (exception as any)?.name === 'SequelizeForeignKeyConstraintError'
+    ) {
       // Find userId in error string from sequelize
       // Error string from sequelize looks like this 'Key (user_id)=(0d5fd281-214d-4e36-ac74-af4239120f50) doesn't exist ...'
       const userId = [
@@ -26,9 +29,11 @@ export class AllExceptionFilter extends BaseExceptionFilter {
         ? `User with id ${userId} doesn't exist`
         : ErrorMsgs.UserIdsNotExist;
 
-      return super.catch(new NotFoundException(errorMsg), host);
-    }
-
-    return super.catch(exception, host);
+      super.catch(new NotFoundException(errorMsg), host);
+    } else if ((exception as any)?.name === 'TokenExpiredError')
+      super.catch(new UnauthorizedException(), host);
+    else if ((exception as any)?.name === 'JsonWebTokenError')
+      super.catch(new ForbiddenException(), host);
+    else super.catch(exception, host);
   }
 }

@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
@@ -20,6 +21,7 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 import { AddUsersToGroupDto } from './dto/add-users-to-group.dto';
 import { plainToClass } from 'class-transformer';
 import { GroupEntity } from './entities/group.entity';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller({ path: 'groups', version: '1' })
@@ -27,6 +29,7 @@ export class GroupsController {
   constructor(private groupsService: GroupsService) {}
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   async getGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<GroupEntity> {
@@ -38,6 +41,7 @@ export class GroupsController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   async getAllGroups(): Promise<GroupEntity[]> {
     const groups = await this.groupsService.getAllGroups();
 
@@ -45,6 +49,7 @@ export class GroupsController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   async createGroup(
     @Body() createGroupDto: CreateGroupDto,
   ): Promise<GroupEntity> {
@@ -54,6 +59,7 @@ export class GroupsController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   async updateGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateGroupDto: UpdateGroupDto,
@@ -64,6 +70,7 @@ export class GroupsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -74,6 +81,7 @@ export class GroupsController {
   }
 
   @Post(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async addUsersToGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
