@@ -22,6 +22,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { checkData } from '../utils/check-data';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { Permissions } from '../shared/decorators/permissions.decorator';
+import { GroupPermissions } from '../groups/utils/group-permissions';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller({ path: 'users', version: '1' })
@@ -29,7 +32,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get(':id')
-  @UseGuards(AuthGuard)
+  @Permissions(GroupPermissions.read)
+  @UseGuards(AuthGuard, PermissionsGuard)
   async getUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<UserEntity> {
@@ -46,7 +50,8 @@ export class UsersController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard)
+  @Permissions(GroupPermissions.write)
+  @UseGuards(AuthGuard, PermissionsGuard)
   async updateUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -59,7 +64,8 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
+  @Permissions(GroupPermissions.read)
+  @UseGuards(AuthGuard, PermissionsGuard)
   async getAutoSuggestUsers(
     @Query('search') loginSubstring: string,
     @Query('limit', new DefaultValuePipe(10)) limit: number,
@@ -70,7 +76,8 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard)
+  @Permissions(GroupPermissions.delete)
+  @UseGuards(AuthGuard, PermissionsGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

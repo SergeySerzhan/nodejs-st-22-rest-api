@@ -22,6 +22,9 @@ import { AddUsersToGroupDto } from './dto/add-users-to-group.dto';
 import { plainToClass } from 'class-transformer';
 import { GroupEntity } from './entities/group.entity';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { Permissions } from '../shared/decorators/permissions.decorator';
+import { GroupPermissions } from './utils/group-permissions';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller({ path: 'groups', version: '1' })
@@ -29,7 +32,8 @@ export class GroupsController {
   constructor(private groupsService: GroupsService) {}
 
   @Get(':id')
-  @UseGuards(AuthGuard)
+  @Permissions(GroupPermissions.read)
+  @UseGuards(AuthGuard, PermissionsGuard)
   async getGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<GroupEntity> {
@@ -41,7 +45,8 @@ export class GroupsController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
+  @Permissions(GroupPermissions.read)
+  @UseGuards(AuthGuard, PermissionsGuard)
   async getAllGroups(): Promise<GroupEntity[]> {
     const groups = await this.groupsService.getAllGroups();
 
@@ -49,7 +54,8 @@ export class GroupsController {
   }
 
   @Post()
-  @UseGuards(AuthGuard)
+  @Permissions(GroupPermissions.write)
+  @UseGuards(AuthGuard, PermissionsGuard)
   async createGroup(
     @Body() createGroupDto: CreateGroupDto,
   ): Promise<GroupEntity> {
@@ -59,6 +65,7 @@ export class GroupsController {
   }
 
   @Put(':id')
+  @Permissions(GroupPermissions.write)
   @UseGuards(AuthGuard)
   async updateGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -70,7 +77,8 @@ export class GroupsController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard)
+  @Permissions(GroupPermissions.delete)
+  @UseGuards(AuthGuard, PermissionsGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

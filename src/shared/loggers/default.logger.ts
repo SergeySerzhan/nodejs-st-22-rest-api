@@ -1,6 +1,6 @@
 import { createLogger, format, transports } from 'winston';
 
-let { combine, timestamp, json } = format;
+const { combine, timestamp, json } = format;
 
 const serializeReqRes = format((info) => {
   if (info?.req?.rawHeaders) {
