@@ -16,13 +16,13 @@ Install DB [PostgreSQL](https://www.postgresql.org/) on your machine or use a fr
 
 Rename .env.example file to .env. You need to change .env file and provide your PostgreSQL database credentials.
 
-To create and migrate new Users table in your database you can run:
+To create and migrate new Users and Groups tables in your database you can run:
 
 ```bash
 npm run sl:migrate
 ```
 
-To seed existing Users table with data you can run:
+To seed existing Users and Groups table with data you can run:
 
 ```bash
 npm run sl:seed
@@ -45,14 +45,14 @@ Application starts on PORT 3000 (you can change this in .env file), default URL 
 
 ## Usage
 
-You can use [Postman](https://www.postman.com/) to send requests to server:
+You can use [Postman](https://www.postman.com/) to send requests to server. All endpoints (except POST /v1/auth/login and POST /v1/users) are protected, that means you need authorize (login), and endpoints require permissions (except POST /v1/groups/:id - addUsersToGroup).
 
 <details>
 <summary>Users endpoints</summary>
 
 ### GET /v1/users/:id
 
-Get user by id. Where :id is user ID in uuid v4 format. Response example:
+Get user by id. Where :id is user ID in uuid v4 format. Require 'READ' permission. Response example:
 
 ```json
 {
@@ -93,7 +93,7 @@ Response example:
 
 ### PUT /v1/users/:id
 
-Update existing user by id. Where :id is user ID in uuid v4 format. Request should contain body in JSON format. Request body example:
+Update existing user by id. Where :id is user ID in uuid v4 format. Request should contain body in JSON format. Require 'WRITE' permission. Request body example:
 
 ```json
 {
@@ -115,7 +115,7 @@ Response example:
 
 ### GET /v1/users?search=:searchString&limit=:limitNum
 
-Get array of users which login contain search string. :searchString this is string to search, limit is length of response array.
+Get array of users which login contain search string. :searchString this is string to search, limit is length of response array. Require 'READ' permission.
 Response example:
 
 ```json
@@ -149,7 +149,7 @@ Response example:
 
 ### DELETE /v1/users/:id
 
-Delete user by id. Where :id is user ID in uuid v4 format. Response with 204 status code No-Content.
+Delete user by id. Where :id is user ID in uuid v4 format. Require 'DELETE' permission. Response with 204 status code No-Content.
 
 </details>
 
@@ -158,7 +158,7 @@ Delete user by id. Where :id is user ID in uuid v4 format. Response with 204 sta
 
 ### GET /v1/groups/:id
 
-Get group by id. Where :id is group ID in uuid v4 format. Response example:
+Get group by id. Where :id is group ID in uuid v4 format. Require 'READ' permission. Response example:
 
 ```json
 {
@@ -177,7 +177,7 @@ Get group by id. Where :id is group ID in uuid v4 format. Response example:
 
 ### GET /v1/groups
 
-Get all groups. Response example:
+Get all groups. Require 'READ' permission. Response example:
 
 ```json
 [
@@ -231,7 +231,7 @@ Response example:
 
 ### PUT /v1/groups/:id
 
-Update existing user by id. Where :id is group ID in uuid v4 format. Request should contain body in JSON format, where all fields are optional. Request body example:
+Update existing user by id. Where :id is group ID in uuid v4 format. Request should contain body in JSON format, where all fields are optional. Require 'WRITE' permission. Request body example:
 
 ```json
 {
@@ -252,7 +252,7 @@ Response example:
 
 ### DELETE /v1/groups/:id
 
-Delete group by id. Where :id is group ID in uuid v4 format. Response with 204 status code No-Content.
+Delete group by id. Where :id is group ID in uuid v4 format. Require 'DELETE' permission. Response with 204 status code No-Content.
 
 ### POST /v1/groups/:id
 
@@ -281,6 +281,29 @@ Response example:
       "id": "f7d16881-106b-420b-9b5e-d95649603884"
     }
   ]
+}
+```
+
+</details>
+
+<details>
+<summary>Auth endpoints</summary>
+
+### POST /v1/auth/login
+
+Login user. Request should contain body in JSON format. Request body example:
+
+```json
+{
+    "login": "sergeyserzhan",
+    "password": "12345678qwe"
+}
+```
+
+Response example: 
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YjFkZWI0ZC0zYjdkLTRiYWQtOWJkZC0yYjBkN2IzZGNiNmQiLCJpYXQiOjE1MTYyMzkwMjJ9.A7RPWdhfOusPgTTbdZSskLRezAHR4yDzoa2Enyxhwlc"
 }
 ```
 

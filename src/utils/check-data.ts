@@ -1,13 +1,16 @@
 import { NotFoundException } from '@nestjs/common';
 
-import { User } from '../users/models/user.model';
-import { Group } from '../groups/models/group.model';
+import { UserEntity } from '../users/entities/user.entity';
+import { GroupEntity } from '../groups/entities/group.entity';
 
 interface options {
   entityName: string;
 }
 
-export function checkData(data: User | Group | number, options: options): void {
+export function checkData(
+  data: UserEntity | GroupEntity | number,
+  options: options,
+): void {
   if (!data)
     throw new NotFoundException(
       `${

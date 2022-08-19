@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 
 import { User } from '../models/user.model';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -19,10 +19,10 @@ interface FindAllOptions {
 export class UsersRepository {
   constructor(@InjectModel(User) private userModel: typeof User) {}
 
-  async findOne(id: string): Promise<User> {
+  async findOne(options: WhereOptions<any>): Promise<User> {
     const user = await this.userModel.findOne({
       where: {
-        id,
+        ...options,
         isDeleted: false,
       },
       include: [{ model: Group, through: { attributes: [] }, required: false }],
