@@ -1,7 +1,7 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { catchError, Observable } from 'rxjs';
 
-import { logger } from '../loggers/service.logger';
+import { logger } from '../loggers/default.logger';
 
 export class ErrorLoggingInterceptor implements NestInterceptor {
   intercept(ctx: ExecutionContext, next: CallHandler): Observable<any> {
