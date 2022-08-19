@@ -54,8 +54,7 @@ export class GroupsController {
   }
 
   @Post()
-  @Permissions(GroupPermissions.write)
-  @UseGuards(AuthGuard, PermissionsGuard)
+  @UseGuards(AuthGuard)
   async createGroup(
     @Body() createGroupDto: CreateGroupDto,
   ): Promise<GroupEntity> {
