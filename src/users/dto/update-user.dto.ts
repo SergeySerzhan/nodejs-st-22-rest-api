@@ -12,18 +12,18 @@ export class UpdateUserDto {
   @IsNotEmpty()
   @IsString()
   @IsOptional()
-  login: string;
+  login?: string;
 
   @Matches(/^(?=.*[A-Za-z])(?=.*\d)(.+){2,}$/, {
     message: 'Password must contain letters and numbers',
   })
   @IsString()
   @IsOptional()
-  password: string;
+  password?: string;
 
   @Min(4)
   @Max(130)
   @IsInt()
   @IsOptional()
-  age: number;
+  age?: number;
 }

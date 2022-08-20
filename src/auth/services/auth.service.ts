@@ -17,8 +17,16 @@ export class AuthService {
 
     const user = await this.usersRepository.findOne({ login });
 
-    if (!user || !(await compare(password, user.password))) return;
+    if (!user || !(await AuthService.comparePasswords(password, user.password)))
+      return;
 
     return this.jwtService.signAsync({ sub: user.id });
+  }
+
+  private static async comparePasswords(
+    password: string,
+    hashPassword: string,
+  ): Promise<boolean> {
+    return compare(password, hashPassword);
   }
 }
