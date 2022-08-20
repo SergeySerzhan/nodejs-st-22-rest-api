@@ -1,5 +1,6 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 
 import { AppModule } from './app.module';
 import { AllExceptionFilter } from './shared/filters/all-exception.filter';
@@ -23,6 +24,12 @@ process.on('unhandledRejection', (e) => {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    methods: ['GET', 'HEAD', 'PUT', 'POST', 'DELETE'],
+  });
+
+  app.use(helmet());
 
   app.enableVersioning();
 
