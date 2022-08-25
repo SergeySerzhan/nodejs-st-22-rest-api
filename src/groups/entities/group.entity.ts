@@ -11,7 +11,7 @@ export class GroupEntity {
   permissions: GroupPermissions[];
 
   @Type(() => UserEntity)
-  users: UserEntity[];
+  users?: UserEntity[];
 
   constructor(partial: Partial<GroupEntity>) {
     Object.assign(this, partial);
