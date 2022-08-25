@@ -12,7 +12,7 @@ export class UpdateGroupDto {
   @IsOptional()
   @IsNotEmpty()
   @IsString()
-  name: string;
+  name?: string;
 
   @IsOptional()
   @IsArray()
@@ -20,5 +20,5 @@ export class UpdateGroupDto {
     each: true,
     message: `Permissions must contain only allowed values: ${GroupPermissions.read}, ${GroupPermissions.delete}, ${GroupPermissions.share}, ${GroupPermissions.upload}, ${GroupPermissions.write}`,
   })
-  permissions: GroupPermissions[];
+  permissions?: GroupPermissions[];
 }

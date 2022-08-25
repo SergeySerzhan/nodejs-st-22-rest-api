@@ -14,17 +14,17 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { GroupsService } from './services/groups.service';
-import { checkData } from '../utils/check-data';
-import { CreateGroupDto } from './dto/create-group.dto';
-import { UpdateGroupDto } from './dto/update-group.dto';
-import { AddUsersToGroupDto } from './dto/add-users-to-group.dto';
+import { GroupsService } from '../services/groups.service';
+import { checkData } from '../../utils/check-data';
+import { CreateGroupDto } from '../dto/create-group.dto';
+import { UpdateGroupDto } from '../dto/update-group.dto';
+import { AddUsersToGroupDto } from '../dto/add-users-to-group.dto';
 import { plainToClass } from 'class-transformer';
-import { GroupEntity } from './entities/group.entity';
-import { AuthGuard } from '../auth/guards/auth.guard';
-import { Permissions } from '../shared/decorators/permissions.decorator';
-import { GroupPermissions } from './utils/group-permissions';
-import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { GroupEntity } from '../entities/group.entity';
+import { AuthGuard } from '../../auth/guards/auth.guard';
+import { Permissions } from '../../shared/decorators/permissions.decorator';
+import { GroupPermissions } from '../utils/group-permissions';
+import { PermissionsGuard } from '../../auth/guards/permissions.guard';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller({ path: 'groups', version: '1' })
@@ -71,6 +71,8 @@ export class GroupsController {
     @Body() updateGroupDto: UpdateGroupDto,
   ): Promise<GroupEntity> {
     const group = await this.groupsService.updateGroup(id, updateGroupDto);
+
+    checkData(group, { entityName: 'group' });
 
     return plainToClass(GroupEntity, group);
   }

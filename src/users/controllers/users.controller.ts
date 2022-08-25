@@ -16,15 +16,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { UsersService } from './services/users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
-import { checkData } from '../utils/check-data';
-import { AuthGuard } from '../auth/guards/auth.guard';
-import { Permissions } from '../shared/decorators/permissions.decorator';
-import { GroupPermissions } from '../groups/utils/group-permissions';
-import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { UsersService } from '../services/users.service';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { UserEntity } from '../entities/user.entity';
+import { checkData } from '../../utils/check-data';
+import { AuthGuard } from '../../auth/guards/auth.guard';
+import { Permissions } from '../../shared/decorators/permissions.decorator';
+import { GroupPermissions } from '../../groups/utils/group-permissions';
+import { PermissionsGuard } from '../../auth/guards/permissions.guard';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller({ path: 'users', version: '1' })

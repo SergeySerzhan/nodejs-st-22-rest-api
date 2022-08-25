@@ -12,7 +12,6 @@ export class GroupsRepository {
   constructor(
     @InjectModel(Group) private groupModel: typeof Group,
     private sequelize: Sequelize,
-    @InjectModel(User) private userModel: typeof User,
   ) {}
 
   async findByPk(id: string): Promise<Group> {

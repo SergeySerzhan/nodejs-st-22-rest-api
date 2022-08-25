@@ -4,9 +4,9 @@ import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
 import { NotFoundException } from '@nestjs/common';
 
 import { UsersController } from './users.controller';
-import { User } from './models/user.model';
-import { UsersRepository } from './data-access/users.repository';
-import { UsersService } from './services/users.service';
+import { User } from '../models/user.model';
+import { UsersRepository } from '../data-access/users.repository';
+import { UsersService } from '../services/users.service';
 
 const moduleMocker = new ModuleMocker(global);
 
@@ -104,10 +104,12 @@ describe('UsersController', () => {
 
   describe('getUser', () => {
     it('should get a user by id', async () => {
+      expect.assertions(1);
       expect(await usersController.getUser('1')).toEqual(testUser1);
     });
 
     it(`should throw error with message ${ErrorsMsg.NotFound}`, async () => {
+      expect.assertions(1);
       await expect(async () => {
         await usersController.getUser('3');
       }).rejects.toThrow(new NotFoundException(ErrorsMsg.NotFound));
@@ -116,6 +118,7 @@ describe('UsersController', () => {
 
   describe('createUser', () => {
     it('should create a new user', async () => {
+      expect.assertions(1);
       expect(await usersController.createUser(createUserMock)).toEqual(
         createUser,
       );
@@ -124,12 +127,14 @@ describe('UsersController', () => {
 
   describe('updateUser', () => {
     it('should update existing user', async () => {
+      expect.assertions(1);
       expect(
         await usersController.updateUser('1', { age: updateUser.age }),
       ).toEqual(updateUser);
     });
 
     it(`should throw error with message ${ErrorsMsg.NotFound}`, async () => {
+      expect.assertions(1);
       await expect(async () => {
         await usersController.updateUser('3', { age: updateUser.age });
       }).rejects.toThrow(new NotFoundException(ErrorsMsg.NotFound));
@@ -138,6 +143,7 @@ describe('UsersController', () => {
 
   describe('getAutoSuggestUsers', () => {
     it(`should get all users with login which contain ${loginSubstring}`, async () => {
+      expect.assertions(1);
       expect(
         await usersController.getAutoSuggestUsers(loginSubstring, undefined),
       ).not.toEqual(expect.arrayContaining(users));
