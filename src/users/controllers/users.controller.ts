@@ -15,6 +15,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -26,6 +27,7 @@ import { Permissions } from '../../shared/decorators/permissions.decorator';
 import { GroupPermissions } from '../../groups/utils/group-permissions';
 import { PermissionsGuard } from '../../auth/guards/permissions.guard';
 
+@ApiTags('users')
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller({ path: 'users', version: '1' })
 export class UsersController {
@@ -34,6 +36,7 @@ export class UsersController {
   @Get(':id')
   @Permissions(GroupPermissions.read)
   @UseGuards(AuthGuard, PermissionsGuard)
+  @ApiBearerAuth()
   async getUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<UserEntity> {
@@ -52,6 +55,7 @@ export class UsersController {
   @Put(':id')
   @Permissions(GroupPermissions.write)
   @UseGuards(AuthGuard, PermissionsGuard)
+  @ApiBearerAuth()
   async updateUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -66,6 +70,7 @@ export class UsersController {
   @Get()
   @Permissions(GroupPermissions.read)
   @UseGuards(AuthGuard, PermissionsGuard)
+  @ApiBearerAuth()
   async getAutoSuggestUsers(
     @Query('search') loginSubstring: string,
     @Query('limit', new DefaultValuePipe(10)) limit: number,
@@ -79,6 +84,7 @@ export class UsersController {
   @Permissions(GroupPermissions.delete)
   @UseGuards(AuthGuard, PermissionsGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
   async deleteUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {

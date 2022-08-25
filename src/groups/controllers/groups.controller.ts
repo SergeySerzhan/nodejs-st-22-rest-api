@@ -13,6 +13,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { GroupsService } from '../services/groups.service';
 import { checkData } from '../../utils/check-data';
@@ -26,14 +27,17 @@ import { Permissions } from '../../shared/decorators/permissions.decorator';
 import { GroupPermissions } from '../utils/group-permissions';
 import { PermissionsGuard } from '../../auth/guards/permissions.guard';
 
+@ApiTags('groups')
 @UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(AuthGuard)
+@ApiBearerAuth()
 @Controller({ path: 'groups', version: '1' })
 export class GroupsController {
   constructor(private groupsService: GroupsService) {}
 
   @Get(':id')
   @Permissions(GroupPermissions.read)
-  @UseGuards(AuthGuard, PermissionsGuard)
+  @UseGuards(PermissionsGuard)
   async getGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<GroupEntity> {
@@ -46,7 +50,7 @@ export class GroupsController {
 
   @Get()
   @Permissions(GroupPermissions.read)
-  @UseGuards(AuthGuard, PermissionsGuard)
+  @UseGuards(PermissionsGuard)
   async getAllGroups(): Promise<GroupEntity[]> {
     const groups = await this.groupsService.getAllGroups();
 
@@ -54,7 +58,6 @@ export class GroupsController {
   }
 
   @Post()
-  @UseGuards(AuthGuard)
   async createGroup(
     @Body() createGroupDto: CreateGroupDto,
   ): Promise<GroupEntity> {
@@ -65,7 +68,7 @@ export class GroupsController {
 
   @Put(':id')
   @Permissions(GroupPermissions.write)
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionsGuard)
   async updateGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateGroupDto: UpdateGroupDto,
@@ -79,7 +82,7 @@ export class GroupsController {
 
   @Delete(':id')
   @Permissions(GroupPermissions.delete)
-  @UseGuards(AuthGuard, PermissionsGuard)
+  @UseGuards(PermissionsGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -90,7 +93,6 @@ export class GroupsController {
   }
 
   @Post(':id')
-  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async addUsersToGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

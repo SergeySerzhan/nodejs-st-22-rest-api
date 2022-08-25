@@ -7,6 +7,7 @@ import { AllExceptionFilter } from './shared/filters/all-exception.filter';
 import { globalLogger } from './shared/middlewares/logger.middleware';
 import { logger } from './shared/loggers/default.logger';
 import { ErrorLoggingInterceptor } from './shared/interceptors/error-logging.interceptor';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 process.on('uncaughtException', (e) => {
   logger.log({ level: 'error', message: e.message, error: e });
@@ -45,6 +46,15 @@ async function bootstrap() {
   app.use(globalLogger);
 
   app.useGlobalInterceptors(new ErrorLoggingInterceptor());
+
+  const config = new DocumentBuilder()
+    .setTitle('Users and groups API')
+    .setDescription('CRUD API to manage users and groups')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(process.env.PORT || 3000);
 }

@@ -10,7 +10,7 @@ import { UsersService } from '../services/users.service';
 
 const moduleMocker = new ModuleMocker(global);
 
-class UserMock {
+class TestUser {
   id: string;
 
   login: string;
@@ -28,17 +28,17 @@ class UserMock {
   }
 }
 
-const testUser1 = new UserMock('1', 'testuser1', 25);
-const testUser2 = new UserMock('2', 'testuser2', 25);
-const createUser = new UserMock('3', 'testuser3', 25);
-const updateUser = new UserMock('1', 'testuser1', 26);
+const testUser1 = new TestUser('1', 'testuser1', 25);
+const testUser2 = new TestUser('2', 'testuser2', 25);
+const testCreateUser = new TestUser('3', 'testuser3', 25);
+const testUpdateUser = new TestUser('1', 'testuser1', 26);
 
 const users = [testUser1, testUser2];
 
-const createUserMock = {
-  login: createUser.login,
+const testCreateUserDto = {
+  login: testCreateUser.login,
   password: '12345678qwe',
-  age: createUser.age,
+  age: testCreateUser.age,
 };
 
 const loginSubstring = 'testuser';
@@ -64,7 +64,7 @@ describe('UsersController', () => {
               return Promise.resolve(users.find((user) => user.id === id));
             }),
 
-            create: jest.fn(() => createUser),
+            create: jest.fn(() => testCreateUser),
 
             update: jest.fn((updateUserMock, options) => {
               const { id } = options.where;
@@ -119,24 +119,24 @@ describe('UsersController', () => {
   describe('createUser', () => {
     it('should create a new user', async () => {
       expect.assertions(1);
-      expect(await usersController.createUser(createUserMock)).toEqual(
-        createUser,
+      expect(await usersController.createUser(testCreateUserDto)).toEqual(
+        testCreateUser,
       );
     });
   });
 
   describe('updateUser', () => {
-    it('should update existing user', async () => {
+    it('should update existing user age', async () => {
       expect.assertions(1);
       expect(
-        await usersController.updateUser('1', { age: updateUser.age }),
-      ).toEqual(updateUser);
+        await usersController.updateUser('1', { age: testUpdateUser.age }),
+      ).toEqual(testUpdateUser);
     });
 
     it(`should throw error with message ${ErrorsMsg.NotFound}`, async () => {
       expect.assertions(1);
       await expect(async () => {
-        await usersController.updateUser('3', { age: updateUser.age });
+        await usersController.updateUser('3', { age: testUpdateUser.age });
       }).rejects.toThrow(new NotFoundException(ErrorsMsg.NotFound));
     });
   });

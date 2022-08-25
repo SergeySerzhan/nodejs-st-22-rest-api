@@ -11,7 +11,7 @@ import { NotFoundException } from '@nestjs/common';
 
 const moduleMocker = new ModuleMocker(global);
 
-class GroupMock {
+class TestGroup {
   id: string;
 
   name: string;
@@ -29,32 +29,32 @@ class GroupMock {
   }
 }
 
-const testgroup1 = new GroupMock(
+const testGroup1 = new TestGroup(
   '1',
   'testgroup1',
   GroupPermissions.delete,
   GroupPermissions.read,
 );
-const testgroup2 = new GroupMock(
+const testGroup2 = new TestGroup(
   '2',
   'testgroup2',
   GroupPermissions.delete,
   GroupPermissions.read,
 );
-const createGroup = new GroupMock('3', 'testgroup3', GroupPermissions.read);
-const updateGroup = new GroupMock(
+const testCreateGroup = new TestGroup('3', 'testgroup3', GroupPermissions.read);
+const testUpdateGroup = new TestGroup(
   '1',
   'testgroup10',
   GroupPermissions.delete,
   GroupPermissions.read,
 );
 
-const createGroupMock = {
+const testCreateGroupDto = {
   name: 'testgroup3',
   permissions: [GroupPermissions.read],
 };
 
-const groups = [testgroup1, testgroup2];
+const groups = [testGroup1, testGroup2];
 
 enum ErrorsMsg {
   NotFound = 'Group with this id not found',
@@ -78,7 +78,7 @@ describe('GroupsController', () => {
 
             findAll: jest.fn().mockResolvedValue(groups),
 
-            create: jest.fn().mockResolvedValue(createGroup),
+            create: jest.fn().mockResolvedValue(testCreateGroup),
 
             update: jest.fn((updateGroupMock, options) => {
               const { id } = options.where;
@@ -115,7 +115,7 @@ describe('GroupsController', () => {
   describe('getGroup', () => {
     it('should get a group by id', async () => {
       expect.assertions(1);
-      expect(await groupsController.getGroup('1')).toEqual(testgroup1);
+      expect(await groupsController.getGroup('1')).toEqual(testGroup1);
     });
 
     it(`should throw error with message ${ErrorsMsg.NotFound}`, async () => {
@@ -136,24 +136,24 @@ describe('GroupsController', () => {
   describe('createGroup', () => {
     it('should create new group', async () => {
       expect.assertions(1);
-      expect(await groupsController.createGroup(createGroupMock)).toEqual(
-        createGroup,
+      expect(await groupsController.createGroup(testCreateGroupDto)).toEqual(
+        testCreateGroup,
       );
     });
   });
 
   describe('updateGroup', () => {
-    it('should update existing group', async () => {
+    it('should update existing group name', async () => {
       expect.assertions(1);
       expect(
-        await groupsController.updateGroup('1', { name: updateGroup.name }),
-      ).toEqual(updateGroup);
+        await groupsController.updateGroup('1', { name: testUpdateGroup.name }),
+      ).toEqual(testUpdateGroup);
     });
 
     it(`should throw error with message ${ErrorsMsg.NotFound}`, async () => {
       expect.assertions(1);
       await expect(async () => {
-        await groupsController.updateGroup('3', { name: updateGroup.name });
+        await groupsController.updateGroup('3', { name: testUpdateGroup.name });
       }).rejects.toThrow(new NotFoundException(ErrorsMsg.NotFound));
     });
   });
@@ -177,7 +177,7 @@ describe('GroupsController', () => {
       expect.assertions(1);
       expect(
         await groupsController.addUsersToGroup('1', { userIds: ['1'] }),
-      ).toEqual(testgroup1);
+      ).toEqual(testGroup1);
     });
 
     it(`should throw error with message ${ErrorsMsg}`, async () => {
