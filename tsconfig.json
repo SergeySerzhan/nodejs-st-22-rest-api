@@ -10,6 +10,12 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "#auth/*": ["src/auth/*"],
+      "#groups/*": ["src/groups/*"],
+      "#shared/*": ["src/shared/*"],
+      "#users/*": ["src/users/*"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,

@@ -17,15 +17,16 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-import { UsersService } from '../services/users.service';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
-import { UserEntity } from '../entities/user.entity';
-import { checkData } from '../../utils/check-data';
-import { AuthGuard } from '../../auth/guards/auth.guard';
-import { Permissions } from '../../shared/decorators/permissions.decorator';
-import { GroupPermissions } from '../../groups/utils/group-permissions';
-import { PermissionsGuard } from '../../auth/guards/permissions.guard';
+import { UsersService } from '#users/services/users.service';
+import { CreateUserDto } from '#users/dto/create-user.dto';
+import { UpdateUserDto } from '#users/dto/update-user.dto';
+import { UserEntity } from '#users/entities/user.entity';
+import { checkData } from '#shared/utils/check-data';
+import { AuthGuard } from '#auth/guards/auth.guard';
+import { Permissions } from '#shared/decorators/permissions.decorator';
+import { GroupPermissions } from '#groups/utils/group-permissions';
+import { PermissionsGuard } from '#auth/guards/permissions.guard';
+import { ErrorMsgs } from '#shared/utils/error-msgs';
 
 @ApiTags('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -42,7 +43,7 @@ export class UsersController {
   ): Promise<UserEntity> {
     const user = await this.usersService.getUser({ id });
 
-    checkData(user, { entityName: 'user' });
+    checkData(user, { errMsg: ErrorMsgs.UserNotFound });
 
     return new UserEntity(user);
   }
@@ -62,7 +63,7 @@ export class UsersController {
   ): Promise<UserEntity> {
     const user = await this.usersService.updateUser(id, updateUserDto);
 
-    checkData(user, { entityName: 'user' });
+    checkData(user, { errMsg: ErrorMsgs.UserNotFound });
 
     return new UserEntity(user);
   }
@@ -90,6 +91,6 @@ export class UsersController {
   ): Promise<void> {
     const numOfDeletedUser = await this.usersService.deleteUser(id);
 
-    checkData(numOfDeletedUser, { entityName: 'user' });
+    checkData(numOfDeletedUser, { errMsg: ErrorMsgs.UserNotFound });
   }
 }

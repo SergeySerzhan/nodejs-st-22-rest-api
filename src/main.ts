@@ -1,13 +1,12 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import helmet from 'helmet';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
-import { AllExceptionFilter } from './shared/filters/all-exception.filter';
-import { globalLogger } from './shared/middlewares/logger.middleware';
-import { logger } from './shared/loggers/default.logger';
-import { ErrorLoggingInterceptor } from './shared/interceptors/error-logging.interceptor';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AllExceptionFilter } from '#shared/filters/all-exception.filter';
+import { globalLogger } from '#shared/middlewares/logger.middleware';
+import { logger } from '#shared/loggers/default.logger';
+import { ErrorLoggingInterceptor } from '#shared/interceptors/error-logging.interceptor';
 
 process.on('uncaughtException', (e) => {
   logger.log({ level: 'error', message: e.message, error: e });
@@ -29,6 +28,8 @@ async function bootstrap() {
   app.enableCors({
     methods: ['GET', 'HEAD', 'PUT', 'POST', 'DELETE'],
   });
+
+  const { default: helmet } = await import('helmet');
 
   app.use(helmet());
 

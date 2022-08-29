@@ -15,17 +15,18 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-import { GroupsService } from '../services/groups.service';
-import { checkData } from '../../utils/check-data';
-import { CreateGroupDto } from '../dto/create-group.dto';
-import { UpdateGroupDto } from '../dto/update-group.dto';
-import { AddUsersToGroupDto } from '../dto/add-users-to-group.dto';
+import { GroupsService } from '#groups/services/groups.service';
+import { checkData } from '#shared/utils/check-data';
+import { CreateGroupDto } from '#groups/dto/create-group.dto';
+import { UpdateGroupDto } from '#groups/dto/update-group.dto';
+import { AddUsersToGroupDto } from '#groups/dto/add-users-to-group.dto';
 import { plainToClass } from 'class-transformer';
-import { GroupEntity } from '../entities/group.entity';
-import { AuthGuard } from '../../auth/guards/auth.guard';
-import { Permissions } from '../../shared/decorators/permissions.decorator';
-import { GroupPermissions } from '../utils/group-permissions';
-import { PermissionsGuard } from '../../auth/guards/permissions.guard';
+import { GroupEntity } from '#groups/entities/group.entity';
+import { AuthGuard } from '#auth/guards/auth.guard';
+import { Permissions } from '#shared/decorators/permissions.decorator';
+import { GroupPermissions } from '#groups/utils/group-permissions';
+import { PermissionsGuard } from '#auth/guards/permissions.guard';
+import { ErrorMsgs } from '#shared/utils/error-msgs';
 
 @ApiTags('groups')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -43,7 +44,7 @@ export class GroupsController {
   ): Promise<GroupEntity> {
     const group = await this.groupsService.getGroup(id);
 
-    checkData(group, { entityName: 'group' });
+    checkData(group, { errMsg: ErrorMsgs.GroupNotFound });
 
     return plainToClass(GroupEntity, group);
   }
@@ -75,7 +76,7 @@ export class GroupsController {
   ): Promise<GroupEntity> {
     const group = await this.groupsService.updateGroup(id, updateGroupDto);
 
-    checkData(group, { entityName: 'group' });
+    checkData(group, { errMsg: ErrorMsgs.GroupNotFound });
 
     return plainToClass(GroupEntity, group);
   }
@@ -88,7 +89,7 @@ export class GroupsController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
     checkData(await this.groupsService.deleteGroup(id), {
-      entityName: 'group',
+      errMsg: ErrorMsgs.GroupNotFound,
     });
   }
 
@@ -102,7 +103,7 @@ export class GroupsController {
 
     const group = await this.groupsService.addUsersToGroup(id, userIds);
 
-    checkData(group, { entityName: 'group' });
+    checkData(group, { errMsg: ErrorMsgs.GroupNotFound });
 
     return plainToClass(GroupEntity, group);
   }

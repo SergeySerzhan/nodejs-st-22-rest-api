@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
 
-import { Group } from '../models/group.model';
-import { CreateGroupDto } from '../dto/create-group.dto';
-import { UpdateGroupDto } from '../dto/update-group.dto';
-import { User } from '../../users/models/user.model';
+import { Group } from '#groups/models/group.model';
+import { CreateGroupDto } from '#groups/dto/create-group.dto';
+import { UpdateGroupDto } from '#groups/dto/update-group.dto';
+import { User } from '#users/models/user.model';
 
 @Injectable()
 export class GroupsRepository {

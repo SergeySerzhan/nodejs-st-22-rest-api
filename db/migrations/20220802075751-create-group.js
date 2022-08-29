@@ -6,19 +6,23 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
-        unique: true
+        unique: true,
       },
       name: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       permissions: {
         allowNull: false,
-        type: Sequelize.ARRAY(Sequelize.ENUM({values: ['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES']}))
+        type: Sequelize.ARRAY(
+          Sequelize.ENUM({
+            values: ['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES'],
+          }),
+        ),
       },
     });
   },
   async down(queryInterface) {
     await queryInterface.dropTable('groups');
-  }
+  },
 };

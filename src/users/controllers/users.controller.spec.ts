@@ -3,10 +3,10 @@ import { getModelToken } from '@nestjs/sequelize';
 import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
 import { NotFoundException } from '@nestjs/common';
 
-import { UsersController } from './users.controller';
-import { User } from '../models/user.model';
-import { UsersRepository } from '../data-access/users.repository';
-import { UsersService } from '../services/users.service';
+import { UsersController } from '#users/controllers/users.controller';
+import { User } from '#users/models/user.model';
+import { UsersRepository } from '#users/data-access/users.repository';
+import { UsersService } from '#users/services/users.service';
 
 const moduleMocker = new ModuleMocker(global);
 

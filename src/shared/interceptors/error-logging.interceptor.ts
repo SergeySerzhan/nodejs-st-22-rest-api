@@ -1,19 +1,8 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { catchError, Observable } from 'rxjs';
 
-import { logger } from '../loggers/default.logger';
-
-type Body = {
-  [key: string]: any;
-};
-
-class BodySerialize {
-  constructor(body?: Body) {
-    if (body?.password) body.password = '***';
-    if (body?.login) body.login = '***';
-    Object.assign(this, body);
-  }
-}
+import { logger } from '#shared/loggers/default.logger';
+import { BodySerialize } from '#shared/utils/body-serialize';
 
 export class ErrorLoggingInterceptor implements NestInterceptor {
   intercept(ctx: ExecutionContext, next: CallHandler): Observable<any> {

@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 
-import { UserEntity } from '../../users/entities/user.entity';
-import { GroupPermissions } from '../utils/group-permissions';
+import { UserEntity } from '#users/entities/user.entity';
+import { GroupPermissions } from '#groups/utils/group-permissions';
 
 export class GroupEntity {
   id: string;

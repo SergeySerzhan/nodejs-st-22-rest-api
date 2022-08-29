@@ -1,13 +1,13 @@
 import { Test } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/sequelize';
 import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
-
-import { GroupsController } from './groups.controller';
-import { GroupsService } from '../services/groups.service';
-import { GroupsRepository } from '../data-access/groups.repository';
-import { Group } from '../models/group.model';
-import { GroupPermissions } from '../utils/group-permissions';
 import { NotFoundException } from '@nestjs/common';
+
+import { GroupsController } from '#groups/controllers/groups.controller';
+import { GroupsService } from '#groups/services/groups.service';
+import { GroupsRepository } from '#groups/data-access/groups.repository';
+import { Group } from '#groups/models/group.model';
+import { GroupPermissions } from '#groups/utils/group-permissions';
 
 const moduleMocker = new ModuleMocker(global);
 

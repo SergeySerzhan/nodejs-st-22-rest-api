@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
-import { LoginDto } from '../dto/login.dto';
-import { UsersRepository } from '../../users/data-access/users.repository';
+import { LoginDto } from '#auth/dto/login.dto';
+import { UsersRepository } from '#users/data-access/users.repository';
+import { PasswordService } from '#shared/services/password.service';
 
 @Injectable()
 export class AuthService {
@@ -17,16 +17,12 @@ export class AuthService {
 
     const user = await this.usersRepository.findOne({ login });
 
-    if (!user || !(await AuthService.comparePasswords(password, user.password)))
+    if (
+      !user ||
+      !(await PasswordService.comparePasswords(password, user.password))
+    )
       return;
 
     return this.jwtService.signAsync({ sub: user.id });
-  }
-
-  private static async comparePasswords(
-    password: string,
-    hashPassword: string,
-  ): Promise<boolean> {
-    return compare(password, hashPassword);
   }
 }

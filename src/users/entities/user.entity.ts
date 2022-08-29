@@ -1,7 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { ApiHideProperty } from '@nestjs/swagger';
 
-import { GroupEntity } from '../../groups/entities/group.entity';
+import { GroupEntity } from '#groups/entities/group.entity';
 
 export class UserEntity {
   id: string;

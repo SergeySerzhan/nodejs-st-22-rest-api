@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
-import { LoginDto } from './dto/login.dto';
-import { AuthService } from './services/auth.service';
-import { ErrorMsgs } from '../utils/error-msgs';
+import { LoginDto } from '#auth/dto/login.dto';
+import { AuthService } from '#auth/services/auth.service';
+import { ErrorMsgs } from '#shared/utils/error-msgs';
 
 @ApiTags('auth')
 @Controller({ path: 'auth', version: '1' })
