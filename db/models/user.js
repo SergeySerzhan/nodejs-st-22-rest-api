@@ -3,9 +3,12 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-      static associate(models) {
-          User.belongsToMany(models.Group, {through: 'user_groups', foreignKey: 'userId'})
-      }
+    static associate(models) {
+      User.belongsToMany(models.Group, {
+        through: 'user_groups',
+        foreignKey: 'userId',
+      });
+    }
   }
   User.init(
     {
@@ -18,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'User',
-      underscored: true
+      underscored: true,
     },
   );
 
