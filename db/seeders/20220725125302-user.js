@@ -1,7 +1,7 @@
 'use strict';
-const { hash } = require('bcrypt');
+const { hashSync } = require('bcrypt');
 
-const hashPassword = await hash('12345678qwe', 12);
+const hashPassword = hashSync('12345678qwe', 12);
 
 module.exports = {
   async up(queryInterface) {

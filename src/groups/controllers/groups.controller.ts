@@ -13,40 +13,45 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-import { GroupsService } from './services/groups.service';
-import { checkData } from '../utils/check-data';
-import { CreateGroupDto } from './dto/create-group.dto';
-import { UpdateGroupDto } from './dto/update-group.dto';
-import { AddUsersToGroupDto } from './dto/add-users-to-group.dto';
+import { GroupsService } from '#groups/services/groups.service';
+import { checkData } from '#shared/utils/check-data';
+import { CreateGroupDto } from '#groups/dto/create-group.dto';
+import { UpdateGroupDto } from '#groups/dto/update-group.dto';
+import { AddUsersToGroupDto } from '#groups/dto/add-users-to-group.dto';
 import { plainToClass } from 'class-transformer';
-import { GroupEntity } from './entities/group.entity';
-import { AuthGuard } from '../auth/guards/auth.guard';
-import { Permissions } from '../shared/decorators/permissions.decorator';
-import { GroupPermissions } from './utils/group-permissions';
-import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { GroupEntity } from '#groups/entities/group.entity';
+import { AuthGuard } from '#auth/guards/auth.guard';
+import { Permissions } from '#shared/decorators/permissions.decorator';
+import { GroupPermissions } from '#groups/utils/group-permissions';
+import { PermissionsGuard } from '#auth/guards/permissions.guard';
+import { ErrorMsgs } from '#shared/utils/error-msgs';
 
+@ApiTags('groups')
 @UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(AuthGuard)
+@ApiBearerAuth()
 @Controller({ path: 'groups', version: '1' })
 export class GroupsController {
   constructor(private groupsService: GroupsService) {}
 
   @Get(':id')
   @Permissions(GroupPermissions.read)
-  @UseGuards(AuthGuard, PermissionsGuard)
+  @UseGuards(PermissionsGuard)
   async getGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<GroupEntity> {
     const group = await this.groupsService.getGroup(id);
 
-    checkData(group, { entityName: 'group' });
+    checkData(group, { errMsg: ErrorMsgs.GroupNotFound });
 
     return plainToClass(GroupEntity, group);
   }
 
   @Get()
   @Permissions(GroupPermissions.read)
-  @UseGuards(AuthGuard, PermissionsGuard)
+  @UseGuards(PermissionsGuard)
   async getAllGroups(): Promise<GroupEntity[]> {
     const groups = await this.groupsService.getAllGroups();
 
@@ -54,7 +59,6 @@ export class GroupsController {
   }
 
   @Post()
-  @UseGuards(AuthGuard)
   async createGroup(
     @Body() createGroupDto: CreateGroupDto,
   ): Promise<GroupEntity> {
@@ -65,30 +69,31 @@ export class GroupsController {
 
   @Put(':id')
   @Permissions(GroupPermissions.write)
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionsGuard)
   async updateGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateGroupDto: UpdateGroupDto,
   ): Promise<GroupEntity> {
     const group = await this.groupsService.updateGroup(id, updateGroupDto);
 
+    checkData(group, { errMsg: ErrorMsgs.GroupNotFound });
+
     return plainToClass(GroupEntity, group);
   }
 
   @Delete(':id')
   @Permissions(GroupPermissions.delete)
-  @UseGuards(AuthGuard, PermissionsGuard)
+  @UseGuards(PermissionsGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
     checkData(await this.groupsService.deleteGroup(id), {
-      entityName: 'group',
+      errMsg: ErrorMsgs.GroupNotFound,
     });
   }
 
   @Post(':id')
-  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async addUsersToGroup(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -98,7 +103,7 @@ export class GroupsController {
 
     const group = await this.groupsService.addUsersToGroup(id, userIds);
 
-    checkData(group, { entityName: 'group' });
+    checkData(group, { errMsg: ErrorMsgs.GroupNotFound });
 
     return plainToClass(GroupEntity, group);
   }

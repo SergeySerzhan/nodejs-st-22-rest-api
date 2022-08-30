@@ -1,30 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { hash } from 'bcrypt';
 import { WhereOptions } from 'sequelize';
 
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
-import { User } from '../models/user.model';
-import { UsersRepository } from '../data-access/users.repository';
+import { CreateUserDto } from '#users/dto/create-user.dto';
+import { UpdateUserDto } from '#users/dto/update-user.dto';
+import { User } from '#users/models/user.model';
+import { UsersRepository } from '#users/data-access/users.repository';
+import { PasswordService } from '#shared/services/password.service';
 
 @Injectable()
 export class UsersService {
   constructor(private usersRepository: UsersRepository) {}
 
-  async getUser(options: WhereOptions<any>): Promise<User> {
+  async getUser(options: WhereOptions): Promise<User> {
     return this.usersRepository.findOne(options);
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     return this.usersRepository.create({
       ...createUserDto,
-      password: await UsersService.hashPassword(createUserDto.password),
+      password: await PasswordService.hashPassword(createUserDto.password),
     });
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     if (updateUserDto?.password)
-      updateUserDto.password = await UsersService.hashPassword(
+      updateUserDto.password = await PasswordService.hashPassword(
         updateUserDto.password,
       );
     return this.usersRepository.update(id, updateUserDto);
@@ -43,9 +43,5 @@ export class UsersService {
 
   async deleteUser(id: string): Promise<number> {
     return this.usersRepository.delete(id);
-  }
-
-  private static async hashPassword(password): Promise<string> {
-    return hash(password, +process.env.SALT_ROUNDS);
   }
 }

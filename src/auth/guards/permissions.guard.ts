@@ -1,17 +1,22 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { PERMISSIONS_KEY } from '../../shared/decorators/permissions.decorator';
-import { GroupPermissions } from '../../groups/utils/group-permissions';
+import { PERMISSIONS_KEY } from '#shared/decorators/permissions.decorator';
+import { GroupPermissions } from '#groups/utils/group-permissions';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredPermissions = this.reflector.getAll<GroupPermissions[]>(
+    const requiredPermissions = this.reflector.get<GroupPermissions[]>(
       PERMISSIONS_KEY,
-      [context.getHandler()],
+      context.getHandler(),
     );
 
     // Check if doesn't need any permission
@@ -24,10 +29,10 @@ export class PermissionsGuard implements CanActivate {
       return true;
 
     // Check if user have some groups
-    if (!req?.user?.groups) return false;
+    if (!req?.user?.groups) throw new ForbiddenException();
 
     // Check if user contains one of required permissions
-    for (let i = 0; i < req.user.groups; i++) {
+    for (let i = 0; i < req.user.groups.length; i++) {
       if (
         req.user.groups[i].permissions.some((permission) =>
           requiredPermissions.includes(permission),
@@ -36,6 +41,6 @@ export class PermissionsGuard implements CanActivate {
         return true;
     }
 
-    return false;
+    throw new ForbiddenException();
   }
 }

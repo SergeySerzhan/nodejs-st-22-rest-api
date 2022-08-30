@@ -8,8 +8,8 @@ import {
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
-import { Group } from '../../groups/models/group.model';
-import { UserGroup } from '../../shared/models/usergroup.model';
+import { Group } from '#groups/models/group.model';
+import { UserGroup } from '#shared/models/usergroup.model';
 
 @Table({ timestamps: false, underscored: true })
 export class User extends Model {

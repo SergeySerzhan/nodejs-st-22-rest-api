@@ -1,29 +1,5 @@
-import {
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Matches,
-  Max,
-  Min,
-} from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
 
-export class UpdateUserDto {
-  @IsNotEmpty()
-  @IsString()
-  @IsOptional()
-  login: string;
+import { CreateUserDto } from '#users/dto/create-user.dto';
 
-  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(.+){2,}$/, {
-    message: 'Password must contain letters and numbers',
-  })
-  @IsString()
-  @IsOptional()
-  password: string;
-
-  @Min(4)
-  @Max(130)
-  @IsInt()
-  @IsOptional()
-  age: number;
-}
+export class UpdateUserDto extends PartialType(CreateUserDto) {}

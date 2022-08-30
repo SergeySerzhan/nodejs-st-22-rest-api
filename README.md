@@ -47,6 +47,10 @@ Application starts on PORT 3000 (you can change this in .env file), default URL 
 
 You can use [Postman](https://www.postman.com/) to send requests to server. All endpoints (except POST /v1/auth/login and POST /v1/users) are protected, that means you need authorize (login), and endpoints require permissions (except POST /v1/groups/:id - addUsersToGroup).
 
+You can view a documentation by request:
+
+### GET /v1/docs
+
 <details>
 <summary>Users endpoints</summary>
 

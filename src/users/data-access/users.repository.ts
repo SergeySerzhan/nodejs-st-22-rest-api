@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, WhereOptions } from 'sequelize';
 
-import { User } from '../models/user.model';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
-import { Group } from '../../groups/models/group.model';
+import { User } from '#users/models/user.model';
+import { CreateUserDto } from '#users/dto/create-user.dto';
+import { UpdateUserDto } from '#users/dto/update-user.dto';
+import { Group } from '#groups/models/group.model';
 
 type Order = [columnName: string, direction: 'ASC' | 'DESC'];
 
@@ -19,7 +19,7 @@ interface FindAllOptions {
 export class UsersRepository {
   constructor(@InjectModel(User) private userModel: typeof User) {}
 
-  async findOne(options: WhereOptions<any>): Promise<User> {
+  async findOne(options: WhereOptions): Promise<User> {
     const user = await this.userModel.findOne({
       where: {
         ...options,
