@@ -1,0 +1,9 @@
+node_modules
+.env.example
+.husky
+coverage
+dist
+postman-collections
+.eslintrc.js
+.gitignore
+.prettierrc

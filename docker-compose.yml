@@ -1,0 +1,25 @@
+services:
+  app:
+    image: node:16-alpine3.15
+    command: sh -c "npm i && npm run sl:migrate && npm run build && npm i bcrypt && npm run start:prod"
+    ports:
+      - ${PORT}:${PORT}
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    environment:
+      DB_HOST: pg
+    depends_on:
+      - pg
+  pg:
+    image: postgres:14.5-alpine
+    volumes:
+      - api-pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users-api
+volumes:
+  api-pg-data:
