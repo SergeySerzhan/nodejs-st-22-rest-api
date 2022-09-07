@@ -2,6 +2,18 @@
 
 This is simple CRUD API for managing users entities.
 
+## Docker
+
+You can run application with [Docker](https://www.docker.com/). To do this you need to run a command:
+```bash
+docker-compose up
+```
+
+To stop running containers you need to run a command:
+```bash
+docker-compose down
+```
+
 ## Installation
 
 You need to clone or fork this repository and run:
